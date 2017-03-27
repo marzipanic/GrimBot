@@ -1,0 +1,7 @@
+{
+   "version":"YOUR VERSION NUMBER HERE",
+   "token":"YOUR DISCORD TOKEN HERE",
+   "game":"GAME DESCRIPTION HERE",
+   "clientID":"YOUR DISCORD CLIENT ID HERE",
+   "permissions":"YOUR DESIRED PERMISSIONS HERE"
+}

@@ -1,0 +1,17 @@
+1:You summoned?
+2:By your command...and every other Apothecary too.
+3:For the Horde! <:wowhorde:287692239155494913>
+4:Ready to serve. 
+5:...And that's how you skin a murlock alive. *Ah!* Hello there. :blush:
+6:Salutations from the depths of Lordaeron.
+7:Zug zug, to you too. :stuck_out_tongue_winking_eye:
+8:<:wowquest:28766897870326988> If you see her, will you tell Apothecary Mordavrin that my skull requires polish?
+9:May I assist you?
+10:Well met.
+11:Hail.
+12:Looking for group?
+13:Greetings, from the sewers of Undercity.
+14:Grim tidings, from the business chambers of Grand Apothecary Eralos. 
+15:Hello, and mind the rats. Blight General Rouille *adores* them, you know.
+16:...*inferior to RAS Bot?* Pah! I'll show that scrap-for-brains bot the blunt side of my skull, *then* we'll see who's the Society favorite!
+17:<:wowquest:28766897870326988> Would you mind fetching Apothecary Felswift? Silverfish have infested the library again...
