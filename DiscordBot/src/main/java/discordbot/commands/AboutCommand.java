@@ -14,7 +14,7 @@ public class AboutCommand extends ListenerAdapter {
 	    	// Nothing yet.
 	    }
 		
-		public void onMessageReceived(MessageReceivedEvent event) {
+		public void onMessageReceived(final MessageReceivedEvent event) {
 			User author = event.getAuthor();
 		    if((event.isFromType(ChannelType.TEXT) || event.isFromType(ChannelType.PRIVATE)) && !author.isBot()) {
 		    	String msg = event.getMessage().getContent();

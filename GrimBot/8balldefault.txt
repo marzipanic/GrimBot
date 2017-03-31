@@ -1,0 +1,5 @@
+1:If you wish me to divine your question, speak it aloud. I am many things, but telepath is not one of them.
+2:Speak up, fleshling. I don't have ears, but I can't hear you when you mumble.
+3:I spy with my ruby eye...a fleshling who doesn't know how to ask a yes or no question.
+4:I don't know what you're thinking, but whatever it is, *I like it.* The answer is emphatically yes.
+5:I haven't the foggiest idea what you want to ask, but the answer is certainly no.

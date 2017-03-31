@@ -1,0 +1,8 @@
+{
+  "token": "YOUR TOKEN HERE",
+  "clientId": "YOUR CLIENT ID HERE",
+  "prefix":  "!",
+  "game": "BOT GAME STATUS HERE",
+  "version": "0.1-alpha",
+  "permissions": "PERMISSION LEVEL HERE"
+}
