@@ -16,7 +16,6 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public final class Bot {
 	
-	//static String clientId = "";
 	static String prefix = "!"; // default prefix if none specified
 	static JDABuilder builder;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
