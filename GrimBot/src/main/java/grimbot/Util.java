@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Util {
+	
 	public static boolean isInteger(String s) {
 	    return isInteger(s,10);
 	}

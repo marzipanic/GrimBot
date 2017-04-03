@@ -8,7 +8,22 @@
   	<dependency>
 	  <groupId>net.dv8tion</groupId>
 	  <artifactId>JDA</artifactId>
-	  <version>3.0.BETA2_108</version>
+	  <version>3.0.0_165</version>
+	</dependency>
+	<dependency>
+	  <groupId>com.google.oauth-client</groupId>
+	  <artifactId>google-oauth-client</artifactId>
+	  <version>1.22.0</version>
+	</dependency>
+	<dependency>
+	  <groupId>com.google.oauth-client</groupId>
+	  <artifactId>google-oauth-client-java6</artifactId>
+	  <version>1.22.0</version>
+	</dependency>
+	<dependency>
+	  <groupId>com.google.oauth-client</groupId>
+	  <artifactId>google-oauth-client-jetty</artifactId>
+	  <version>1.22.0</version>
 	</dependency>
   </dependencies>
   

@@ -23,7 +23,7 @@ public class ChatListener extends ListenerAdapter {
 		User author = event.getMessage().getAuthor();
 		if ((event.isFromType(ChannelType.TEXT) || event.isFromType(ChannelType.PRIVATE)) && !author.isBot()) {
 			String msg = event.getMessage().getContent();
-			System.out.println("Bot Prefix: "+Bot.prefix);
+			// ADD COMMAND LOGGING
 			if (msg.startsWith(Bot.prefix)) {
 				msg = msg.substring(Bot.prefix.length());
 				
@@ -54,11 +54,14 @@ public class ChatListener extends ListenerAdapter {
 		// Build the message content
 		String text = "__**Available Commands**__"
 				+ "\n`" + Bot.prefix + "help <command name>` Displays command help.";
+		// REFACTOR THIS TO RUN ONCE AT BOT STARTUP, RATHER THAN FETCH ON EVERY HELP REQUEST
 		for(Plugin p: Bot.plugins) {
-			text +="\n`" + Bot.prefix + p.getPrimaryAlias();
-			String[] parameters = p.getParameters();
-			for (int i=0; i<parameters.length; i++) text += " <" + parameters[i] + ">";
-			text +="` " + p.getUsage();
+			if (p.getPrimaryAlias() != null) { text +="\n`" + Bot.prefix + p.getPrimaryAlias(); }
+			if (p.getParameters() != null) {
+				String[] parameters = p.getParameters();
+				for (int i=0; i<parameters.length; i++) text += " <" + parameters[i] + ">";
+			}
+			if (p.getUsage() != null) { text +="` " + p.getUsage(); }
 		}
 		eb.setDescription(text);
 		eb.setFooter("Bot built by Marzipanic#4639", event.getJDA().getUserById("140901708493619200").getEffectiveAvatarUrl());

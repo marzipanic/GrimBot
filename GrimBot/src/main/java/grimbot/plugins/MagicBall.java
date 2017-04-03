@@ -95,9 +95,11 @@ public class MagicBall extends Plugin{
         // return String.format("Answer # %d: %s", keys.get(i), map.get(keys.get(i)));
 	}
 	
+	/* For response fetching
 	private String getAnswer(Integer i) {
 		if (map.get(i) != null) return String.format("Answer # %d: %s", i, map.get(i));
 		else return String.format("I can't alter the universe for you. [There is no answer with that number.]");
 	}
+	*/
 
 }

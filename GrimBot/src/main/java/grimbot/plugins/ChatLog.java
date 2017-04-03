@@ -3,45 +3,44 @@ package grimbot.plugins;
 import grimbot.Plugin;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class About extends Plugin{
+public class ChatLog extends Plugin{
 
-	public About() {
-		super("^about($|\\s+|\\s.+)?");
+	public ChatLog() {
+		super("^log($|\\s+|\\s.+)?");
 	}
 
 	@Override
 	public String getPrimaryAlias() {
-		return "about";
+		return "log";
 	}
 
 	@Override
 	public String[] getOtherAliases() {
-		return new String[] {"info"};
+		return null;
 	}
 
 	@Override
 	public String getUsage() {
-		return "Provides bot info.";
+		return "Logs chat channel.";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Provides bot info.";
+		return "Logs chat channel. If channel name and time interval are left blank, will default to channel that the command was given in and a period of 24 hours.";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return null;
+		return new String[] {"log", "log #general 0M0D2h0m", "log #general all"};
 	}
 
 	@Override
 	public String[] getParameters() {
-		return null;
+		return new String[] {"channel name", "#M#D#h#m | all"};
 	}
 
 	@Override
 	public void handleMessage(String msg, MessageReceivedEvent event) {
-		// TODO Auto-generated method stub
 		
 	}
 
