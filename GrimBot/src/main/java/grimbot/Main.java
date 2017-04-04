@@ -15,12 +15,10 @@ public class Main {
 		Intro();
 		
 		// Load GrimBot
-		//HashMap<String, String> config = LoadConfig("config.json");
 		Config config = new Config("config.json");
 		Bot primary = new Bot(config);
 		
-		// Connect GrimBot
-		// Note that GrimBot must be invited to servers via a Discord web invitation
+		// NOTE: GrimBot must be invited to a server via a Discord web invitation
 		primary.Connect();
 	}
 	

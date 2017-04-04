@@ -73,10 +73,10 @@ public class Config {
 			writer.print(config);
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("ERROR: Config file could not be found.");
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			System.out.println("ERROR: Config file encoding was not supported.");
 			e.printStackTrace();
 		}
 		
