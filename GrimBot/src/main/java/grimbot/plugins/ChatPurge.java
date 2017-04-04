@@ -1,5 +1,6 @@
 package grimbot.plugins;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -11,8 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 import grimbot.Plugin;
 import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ChatPurge extends Plugin{
@@ -55,8 +58,8 @@ public class ChatPurge extends Plugin{
 	public void handleMessage(String msg, MessageReceivedEvent event) {
 		event.getChannel().sendMessage("Attempting to purge channel history...").queue();
 		List<Message> msgs = getHistory(event);
-		recordHistory(msgs, event.getChannel().getId(), event.getChannel().getName());
-		//if (msgs.size() > 0) deleteHistory(msgs);
+		recordHistory(msgs, event);
+		deleteHistory(msgs, event);
         event.getChannel().sendMessage("THIS CHANNEL HAS BEEN PURGED!").queue();
 	}
 	
@@ -66,24 +69,25 @@ public class ChatPurge extends Plugin{
 		history.retrievePast(100).queue();
 		try {
 			System.out.println("DELAY TO FETCH MESSAGE HISTORY...");
-			TimeUnit.SECONDS.sleep(5);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
 		return history.getRetrievedHistory();
 	}
 	
-	private void recordHistory(List<Message> cache, String channelId, String channelName) {
+	private void recordHistory(List<Message> msgs, MessageReceivedEvent event) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date(); //2017-01-30_12-08-43
-		String fileName = channelId + "_" + dateFormat.format(date) + "_" + channelName + ".txt";
+		String filePath = "purge" + File.separator;
+		String fileName = event.getChannel().getId() + "_" + dateFormat.format(date) + "_" + event.getChannel().getName() + ".txt";
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter(fileName, "UTF-8");
-			System.out.println("CACHE: "+cache);
-			for (int i = cache.size() - 1; i >= 0; i--) {
-				Message m = cache.get(i);
+			writer = new PrintWriter(filePath + fileName, "UTF-8");
+			System.out.println("CACHE: "+msgs);
+			for (int i = msgs.size() - 1; i >= 0; i--) {
+				Message m = msgs.get(i);
 				System.out.println("MESSAGE "+i+": "+m);
 				writer.println(m.getCreationTime()
 						+ " [MID: " + m.getId() + "] " 
@@ -92,20 +96,18 @@ public class ChatPurge extends Plugin{
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void deleteHistory(List<Message> history, JDA jda) {
-		/*for (Message m : history) {
-			m.deleteMessage();
-		}*/
-		
-		System.out.println("HISTORY PURGED!");
+	private void deleteHistory(List<Message> msgs, MessageReceivedEvent event) {
+		int count = msgs.size();
+		TextChannel channel = (TextChannel) event.getChannel();
+		if (count > 1) channel.deleteMessages(msgs).queue();
+		else if (count == 1) msgs.get(0).delete().queue();
+		else System.out.println("There were no messages to delete.");
 	}
 
 }
