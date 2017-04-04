@@ -60,7 +60,7 @@ public class ChatPurge extends Plugin{
 		List<Message> msgs = getHistory(event);
 		recordHistory(msgs, event);
 		deleteHistory(msgs, event);
-        event.getChannel().sendMessage("THIS CHANNEL HAS BEEN PURGED!").queue();
+        //event.getChannel().sendMessage("This channel has been purged.").queue();
 	}
 	
 	private List<Message> getHistory(MessageReceivedEvent event) {
@@ -68,8 +68,7 @@ public class ChatPurge extends Plugin{
 		MessageHistory history = new MessageHistory(event.getChannel());
 		history.retrievePast(100).queue();
 		try {
-			System.out.println("DELAY TO FETCH MESSAGE HISTORY...");
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(1); // Delay to avoid rate limit
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
