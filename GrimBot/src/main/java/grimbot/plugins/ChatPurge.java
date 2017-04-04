@@ -13,9 +13,7 @@ import java.util.concurrent.TimeUnit;
 import grimbot.Plugin;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ChatPurge extends Plugin{
@@ -70,6 +68,7 @@ public class ChatPurge extends Plugin{
 		try {
 			TimeUnit.SECONDS.sleep(1); // Delay to avoid rate limit
 		} catch (InterruptedException e) {
+			System.out.println("ERROR: getHistory() delay interrupted.");
 			e.printStackTrace();
 		}
 		
@@ -87,7 +86,6 @@ public class ChatPurge extends Plugin{
 			System.out.println("CACHE: "+msgs);
 			for (int i = msgs.size() - 1; i >= 0; i--) {
 				Message m = msgs.get(i);
-				System.out.println("MESSAGE "+i+": "+m);
 				writer.println(m.getCreationTime()
 						+ " [MID: " + m.getId() + "] " 
 						+ m.getAuthor().getName() + " [UID: " + m.getAuthor().getId() +"]: "
@@ -95,8 +93,10 @@ public class ChatPurge extends Plugin{
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
+			System.out.println("ERROR: Purge output file not found.");
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			System.out.println("ERROR: Purge output file encoding not supported.");
 			e.printStackTrace();
 		}
 	}
