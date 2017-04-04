@@ -15,7 +15,8 @@ public class Main {
 		Intro();
 		
 		// Load GrimBot
-		HashMap<String, String> config = LoadConfig("config.json");
+		//HashMap<String, String> config = LoadConfig("config.json");
+		Config config = new Config("config.json");
 		Bot primary = new Bot(config);
 		
 		// Connect GrimBot
@@ -31,34 +32,6 @@ public class Main {
 				+ "\nVersion: 0.1 Alpha"
 				+ "\n"
 				+ "\nLoading config files...");
-	}
-
-	// Read in basic config settings
-	public static HashMap<String, String> LoadConfig(String filename) {
-    	HashMap<String,String> config = new HashMap<String, String>();
-		try {
-			String configFile = new String(Files.readAllBytes(Paths.get(filename)));
-			JSONObject configJson = new JSONObject(configFile);
-			
-			for (String key : configJson.keySet()) {
-				config.put(key, (String)(configJson.get(key)));
-				System.out.println("KEY: "+key+",     VALUE: "+(String)(configJson.get(key)));
-			}
-			
-			// Check validity of config
-			if (!(config.containsKey("token") && config.containsKey("clientId"))) {
-				System.out.println("ERROR: Config file is missing [token] or [clientId].");
-			} else {
-				System.out.println("SUCCESS: Config file has been loaded.");
-				return config;
-			}
-			
-		} catch (IOException e) {
-			System.out.println("ERROR: Config file could not be read.");
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 }

@@ -23,11 +23,11 @@ public final class Bot {
 			+ File.separator + "target" + File.separator + "classes" 
 			+ File.separator + "grimbot" + File.separator + "plugins";
 	
-	public Bot(HashMap<String, String> config) {
+	public Bot(Config config) {
 		//clientId = config.get("clientId");
-		prefix = config.get("prefix");
+		prefix = config.getPrefix();
 		builder = new JDABuilder(AccountType.BOT)
-				.setToken(config.get("token"))
+				.setToken(config.getToken())
 	        	.setBulkDeleteSplittingEnabled(false)
 	        	.setAutoReconnect(true);
 	}
