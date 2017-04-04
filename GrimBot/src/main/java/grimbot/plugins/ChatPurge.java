@@ -58,7 +58,7 @@ public class ChatPurge extends Plugin{
 		List<Message> msgs = getHistory(event);
 		recordHistory(msgs, event);
 		deleteHistory(msgs, event);
-        //event.getChannel().sendMessage("This channel has been purged.").queue();
+        System.out.println("PURGED: #"+event.getChannel().getName());
 	}
 	
 	private List<Message> getHistory(MessageReceivedEvent event) {
@@ -83,7 +83,6 @@ public class ChatPurge extends Plugin{
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter(filePath + fileName, "UTF-8");
-			System.out.println("CACHE: "+msgs);
 			for (int i = msgs.size() - 1; i >= 0; i--) {
 				Message m = msgs.get(i);
 				writer.println(m.getCreationTime()
