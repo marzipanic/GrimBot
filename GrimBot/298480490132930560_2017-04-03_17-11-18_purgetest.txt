@@ -1,3 +1,0 @@
-LOG FOR: purgetest
-HISTORY: net.dv8tion.jda.core.MessageHistory@7da6f4f9
-CACHE: []
