@@ -9,11 +9,11 @@ A Java-based chat bot built for Discord that provides chat management functional
 To run GrimBot, you first need to acquire API keys for the services listed above. To register for those API keys, create an account with each of the services linked below, login, then create a new API key for each.
 
 Once you've downloaded this repo, update `config.json.example` file located in the config folder by removing the ".example" extension. You will then need to open the file and replace each of the items listed below with appropriate values:
-*token: This field should contain you Discord Bot API Key, which you can register for it via the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me).
-*clientId: This field should contain the client ID you are given for your bot after registering it with Discord at the link above.
-*prefix:  Choose a command prefix, such as `!` that will suit your Discord server environment. This can help if you need to avoid command collision with other bots.
-*game: An optional field that will change the status displayed on your bot to say "Playing " followed by the text you put here.
-*permissions: An integer representing the standard permission set that should be given to your bot. To generate this integer, use the [Discord Permissions Calculator](https://discordapi.com/permissions.html).
+* token: This field should contain you Discord Bot API Key, which you can register for it via the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me).
+* clientId: This field should contain the client ID you are given for your bot after registering it with Discord at the link above.
+* prefix:  Choose a command prefix, such as `!` that will suit your Discord server environment. This can help if you need to avoid command collision with other bots.
+* game: An optional field that will change the status displayed on your bot to say "Playing " followed by the text you put here.
+* permissions: An integer representing the standard permission set that should be given to your bot. To generate this integer, use the [Discord Permissions Calculator](https://discordapi.com/permissions.html).
 
 Once you've updated these values, save the file and remember not to share your API keys with anyone!
 
