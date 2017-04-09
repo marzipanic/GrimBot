@@ -6,6 +6,11 @@
   
   <dependencies>
   	<dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.16.1</version>
+    </dependency>
+  	<dependency>
 	  <groupId>net.dv8tion</groupId>
 	  <artifactId>JDA</artifactId>
 	  <version>3.0.0_165</version>

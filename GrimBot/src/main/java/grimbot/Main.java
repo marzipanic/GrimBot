@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
+import grimbot.data.SQLiteJDBC;
+
 public class Main {
 	
 	public static void main(String[] args) {
@@ -15,6 +17,7 @@ public class Main {
 		Intro();
 		
 		// Load GrimBot
+		SQLiteJDBC db = new SQLiteJDBC();
 		Config config = new Config("config.json");
 		Bot primary = new Bot(config);
 		

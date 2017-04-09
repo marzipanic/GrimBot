@@ -1,4 +1,4 @@
-package grimbot;
+package grimbot.data;
 
 public class Emoji {
 
