@@ -67,7 +67,7 @@ public class Joke extends Plugin {
         else if (Util.isInteger(cmd[1])) post = getJoke(wowMap, Integer.parseInt(cmd[1]));
         else {
         	switch (cmd[1]) {
-        		case "import": post = importJokes(wowMap, "joke_wow", "jokes.txt");
+        		case "import": post = importJokes(wowMap, wowKeys, "joke_wow", "jokes.txt");
         			break;
         		case "count": post = countJokes("joke_wow", event);
         			break;
@@ -90,23 +90,28 @@ public class Joke extends Plugin {
 		else return String.format("There is no joke with that number. ...*No joke!*");
 	}
 	
-	private String importJokes(HashMap<Integer, String> map, String table, String filename) {
+	private String importJokes(HashMap<Integer, String> map, List<Integer> keys, String table, String filename) {
 		try {
 			HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
+			conn.setAutoCommit(false);
+			PreparedStatement query = conn.prepareStatement("insert into "+table+" values(?,?)");
 			for (int key : newJokes.keySet()) {
 				if (!map.containsKey(key)) {
 					System.out.println("ADDDING TO "+table+": joke #"+key);
-					PreparedStatement query = conn.prepareStatement("insert into "+table+" values(?,?)");
 					query.setInt(1, key);
 					query.setString(2, newJokes.get(key));
-					query.executeUpdate();
+					query.addBatch();
 				} 
 			}
+			query.executeBatch();
+			conn.commit();
+			map = newJokes;
+			keys = new ArrayList<Integer>(map.keySet());
 			return "Jokes have been copied to "+table+" table.";
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return "Could not copy jokes to "+table+" table.";
-		}
+		} 
 	}
 	
 	private String countJokes(String table, MessageReceivedEvent event) {
@@ -129,7 +134,7 @@ public class Joke extends Plugin {
 			s.setQueryTimeout(30);
 			ResultSet rs = s.executeQuery("select * from "+table);
 			while(rs.next()) {
-				temp.put(rs.getInt(0), rs.getString(1));
+				temp.put(rs.getInt(1), rs.getString(2));
 			}
 			s.close();
 		} catch (SQLException e1) {

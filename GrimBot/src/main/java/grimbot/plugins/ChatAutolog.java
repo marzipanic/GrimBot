@@ -21,7 +21,7 @@ public class ChatAutolog extends Plugin{
 
 	@Override
 	public String getUsage() {
-		return "Enables or disables automatic chat logging.";
+		return "Toggle persistent chat logging.";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ChatAutolog extends Plugin{
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"on | off", "channel name", "#hours"};
+		return new String[] {"on|off", "channel name", "#hours"};
 	}
 
 	@Override
