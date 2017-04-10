@@ -17,7 +17,7 @@ public class SQLiteJDBC {
 	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	      System.exit(0);
 	    }
-	    System.out.println("Opened database successfully");
+	    System.out.println("SUCCESS: SQLite database ready.");
 	}
 	
 	public void initializeTable(String name, String columns){

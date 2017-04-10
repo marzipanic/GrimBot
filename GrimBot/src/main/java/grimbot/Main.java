@@ -1,12 +1,5 @@
 package grimbot;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
-
-import org.json.JSONObject;
-
 import grimbot.data.SQLiteJDBC;
 
 public class Main {
@@ -32,7 +25,8 @@ public class Main {
 				+ "\nCreated: February 2017"
 				+ "\nVersion: 0.1 Alpha"
 				+ "\n"
-				+ "\nLoading config files...");
+				+ "\nLoading up GrimBot..."
+				+ "\n");
 	}
 	
 }
