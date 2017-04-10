@@ -2,11 +2,12 @@ package grimbot.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SQLiteJDBC {
-	private Connection connection = null;
+	public Connection connection = null;
 	
 	public SQLiteJDBC() {
 	    try {
@@ -20,12 +21,15 @@ public class SQLiteJDBC {
 	}
 	
 	public void initializeTable(String name, String columns){
-		String prefix = new Exception().getStackTrace()[1].getClassName();
-		String query = "create table if not exists "+prefix+"_"+name+" ("+columns+")";
+		String pluginName = new Exception().getStackTrace()[1].getClassName();
+		String[] split = pluginName.toLowerCase().split("\\.");
+		String query = "create table if not exists "+split[split.length -1]+"_"+name+" ("+columns+")";
 		try {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 			statement.executeUpdate(query);
+			statement.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

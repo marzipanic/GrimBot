@@ -4,11 +4,11 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
+import grimbot.data.SQLiteJDBC;
 //import grimbot.Plugin;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
@@ -22,14 +22,17 @@ public final class Bot {
 	public static final String pluginPath = System.getProperty("user.dir") 
 			+ File.separator + "target" + File.separator + "classes" 
 			+ File.separator + "grimbot" + File.separator + "plugins";
+	public static SQLiteJDBC db = null;
 	
-	public Bot(Config config) {
+	public Bot(Config config, SQLiteJDBC database) {
 		//clientId = config.get("clientId");
+		db = database;
 		prefix = config.getPrefix();
 		builder = new JDABuilder(AccountType.BOT)
 				.setToken(config.getToken())
 	        	.setBulkDeleteSplittingEnabled(false)
 	        	.setAutoReconnect(true);
+		
 	}
 	
 	public void Connect() {

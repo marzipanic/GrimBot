@@ -19,7 +19,7 @@ public class Main {
 		// Load GrimBot
 		SQLiteJDBC db = new SQLiteJDBC();
 		Config config = new Config("config.json");
-		Bot primary = new Bot(config);
+		Bot primary = new Bot(config, db);
 		
 		// NOTE: GrimBot must be invited to a server via a Discord web invitation
 		primary.Connect();
