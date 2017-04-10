@@ -36,7 +36,7 @@ public class ChatLog extends Plugin{
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"channel name", "#M#D#h#m | all"};
+		return new String[] {"channel name", "#M#D#h#m|all"};
 	}
 
 	@Override

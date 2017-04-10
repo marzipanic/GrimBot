@@ -102,7 +102,7 @@ public class ChatListener extends ListenerAdapter {
 				String[] parameters = p.getParameters();
 				for (int i=0; i<parameters.length; i++) menuText += " <" + parameters[i] + ">";
 			}
-			if (p.getUsage() != null) menuText +="`: "+ p.getUsage();
+			if (p.getUsage() != null) menuText +="` - "+ p.getUsage();
 		}
 		
 		// !help <pluginname> response

@@ -57,51 +57,47 @@ public class ChatPurge extends Plugin{
 	public void handleMessage(String msg, MessageReceivedEvent event) {
 		event.getChannel().sendMessage("Attempting to purge channel history...").queue();
 		
-		// Set up purge output file
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-		Date date = new Date(); //2017-01-30_12-08-43
-		String filename = "purge" + File.separator + event.getChannel().getId() + "_" + dateFormat.format(date) + "_" + event.getChannel().getName() + ".txt";
-
-		try {
-			PrintWriter writer = new PrintWriter(filename, "UTF-8");
-			List<Message> msgs = getHistory(event);
-			List<Message> copy = new ArrayList<Message>(null);
-			while (!msgs.isEmpty()) {
-				msgs = processHistory(writer, msgs, filename, event);
-				//deleteHistory(msgs, event);
-				//msgs = getHistory(event);
+		MessageHistory history = new MessageHistory(event.getChannel());
+		history.retrievePast(100).queue(success -> {
+			List<Message> msgs = history.getRetrievedHistory();
+			System.out.println("MSGS COUNT: "+msgs.size());
+			try {
+				// Record purged data in a text file
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+				Date date = new Date(); //2017-01-30_12-08-43
+				String filename = "purge" + File.separator + event.getChannel().getId() + "_" + dateFormat.format(date) + "_" + event.getChannel().getName() + ".txt";
+				PrintWriter writer = new PrintWriter(filename, "UTF-8");
+				writer.println("PURGED MESSAGES:");
+				for (Message m : msgs) {
+					System.out.println(m.getContent());
+					writer.println(
+							m.getCreationTime() + " [MID: " + m.getId() + "] " + m.getAuthor().getName() 
+							+ " [UID: " + m.getAuthor().getId() +"]: " + m.getContent());
+				}
+				writer.close();
+			} catch (FileNotFoundException | UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			writer.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("ERROR: Purge output file not found.");
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			System.out.println("ERROR: Purge output file encoding not supported.");
-			e.printStackTrace();
-		}
-		
-        System.out.println("PURGED: #"+event.getChannel().getName());
+			TextChannel channel = (TextChannel) event.getChannel();
+			channel.deleteMessages(msgs).queue();
+        });
+		System.out.println("PURGED: #"+event.getChannel().getName());
 	}
 	
-	private List<Message> getHistory(MessageReceivedEvent event) {
+	/*private List<Message> getHistory(MessageReceivedEvent event) {
 		// NOTE: Discord service limits bots to retrieving last 2 weeks of channel history ONLY.
 		MessageHistory history = new MessageHistory(event.getChannel());
 		//MessageHistory copy = new MessageHistory(event.getChannel());
-		history.retrievePast(3).queue();
-		//while (history.getRetrievedHistory().equals(copy.getRetrievedHistory())) {
-			//System.out.println("Entered the time loop...");
-			try {
-			TimeUnit.SECONDS.sleep(1); // Delay to avoid rate limit
-			} catch (InterruptedException e) {
-				System.out.println("ERROR: getHistory() interrupted.");
-				e.printStackTrace();
-			}
-		//}
+		history.retrievePast(100).queue();
+		System.out.println("history.getRetrievedHistory() = "+history.getRetrievedHistory());
 		return history.getRetrievedHistory();
 	}
 	
-	private List<Message> processHistory(PrintWriter writer, List<Message> msgs, String filename, MessageReceivedEvent event) {
+	
+	public List<Message> processHistory(PrintWriter writer, List<Message> msgs, String filename, MessageReceivedEvent event) {
 		for (Message m : msgs) {
+			System.out.println("printing message = "+m.getContent());
 			writer.println(m.getCreationTime()
 					+ " [MID: " + m.getId() + "] " 
 					+ m.getAuthor().getName() + " [UID: " + m.getAuthor().getId() +"]: "
@@ -112,11 +108,15 @@ public class ChatPurge extends Plugin{
 		int count = msgs.size();
 		TextChannel channel = (TextChannel) event.getChannel();
 		if (count >= 1) {
-			if (count > 1) channel.deleteMessages(msgs).queue();
-			else msgs.get(0).delete().queue();
-			return getHistory(event);
-		}
-		else System.out.println("There were no messages to delete.");
+			//try {
+				if (count > 1) channel.deleteMessages(msgs).queue();
+				else msgs.get(0).delete().queue();
+				return getHistory(event);
+			} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			}
+		} else System.out.println("There were no messages to delete.");
 		return null;
-	}
+	}*/
 }

@@ -18,7 +18,6 @@ public class Hello extends Plugin{
 		super("^(hello|hi|hola)($|\\s+|\\s.+)?");
 		map = Util.getBotFileAsMap("hellos.txt");
         keys = new ArrayList<Integer>(map.keySet());
-        System.out.println(map.toString());
 	}
 
 	@Override
