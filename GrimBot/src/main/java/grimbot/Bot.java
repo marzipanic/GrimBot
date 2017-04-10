@@ -25,7 +25,6 @@ public final class Bot {
 	public static SQLiteJDBC db = null;
 	
 	public Bot(Config config, SQLiteJDBC database) {
-		//clientId = config.get("clientId");
 		db = database;
 		prefix = config.getPrefix();
 		builder = new JDABuilder(AccountType.BOT)
