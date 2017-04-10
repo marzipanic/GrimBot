@@ -1,13 +1,13 @@
 1:My divining eye is hazy. Can't see a damn thing about your question.
 2:Must you pester me with such banal lines of inquiry?
-3:Don't you have better things to do, like sweeping the Apothecarium?
+3:Don't you have better things to do, like sweeping...something?
 4:*Hnn.* Your answer is no. No. And definitely no.
 5:Indubitably.
 6:Without a doubt.
 7:A charming question, but the answer is no.
 8:There is a chance. But that chance is slim.
 9:The odds look better than most. But don't do anything you'll regret.
-10:What you should *really* ask is \"What would Grimaldi do?\"
+10:What you should *really* ask is \"What would Grimthorpe do?\"
 11:Note likely.
 12:I doubt it.
 13:I'd bet my front teeth on it.
@@ -21,11 +21,11 @@
 21:I didn't know you cared!
 22:If I had a gold piece for every time a body asked that question...
 23:You already know the answer.
-24:Rouille knows the answer.
-25:Eralos knows the answer.
-26:Doctor D. Structo knows the answer, but be careful poking around *that* one. He's a loon! Also. He used up our best candles!
-27:Try asking Inkoka.
-28:Have you spoken to Anneis about this?
+24:Cognelis knows the answer.
+25:Sophrenia knows the answer.
+26:Galmthea knows the answer, but be careful poking around *that* one. She's a loon! Also. Also, she used up my best soap.
+27:Try asking ____.
+28:Have you spoken to ____ about this?
 29:Yes, but the *route* to your answer isn't as simple.
 30:Possibly, but it isn't set in stone.
 31:What a perplexing question! I need time to ponder on it.
