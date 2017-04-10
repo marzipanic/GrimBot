@@ -51,7 +51,7 @@ public class Joke extends Plugin {
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"joke", "joke 42"};
+		return new String[] {"joke", "joke 42", "joke count", "joke import"};
 	}
 
 	@Override
@@ -81,6 +81,7 @@ public class Joke extends Plugin {
 	private String getRandomJoke() {
 		// RESTRUCTURE THIS TO SELECT FROM RANDOM JOKE MAP; useful for handling multiple joke sets/themes
 		Random rand = new Random();
+		if (wowKeys.isEmpty()) return "There are no jokes in the database. Why don't you import some?";
         Integer i = rand.nextInt(wowKeys.size());
         return String.format("Joke # %d: %s", wowKeys.get(i), wowMap.get(wowKeys.get(i)));
 	}
@@ -119,8 +120,9 @@ public class Joke extends Plugin {
 			Statement s = conn.createStatement();
 			s.setQueryTimeout(30);
 			ResultSet rs = s.executeQuery("select count(*) from "+table);
+			int count = rs.getInt(1);
 			s.close();
-			return "There are "+rs.getFetchSize()+" jokes in the "+table+" table.";
+			return "There are "+count+" jokes in the "+table+" table.";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "Error reading "+table+" table.";
