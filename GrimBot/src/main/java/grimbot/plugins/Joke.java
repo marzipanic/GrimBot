@@ -23,10 +23,11 @@ public class Joke extends Plugin {
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
-		map = Util.getBotFileAsMap("jokes.txt");
+		conn = Bot.db.connection;
+		Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
+		//map = Util.getBotFileAsMap("jokes.txt");
+		map = getJokeMap("joke_wow");
         keys = new ArrayList<Integer>(map.keySet());
-        conn = Bot.db.connection;
-        Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
 	}
 
 	@Override
@@ -65,17 +66,15 @@ public class Joke extends Plugin {
     	String[] cmd = msg.split(" ");
         if (cmd.length == 1) post = getRandomJoke();
         else if (Util.isInteger(cmd[1])) post = getJoke(Integer.parseInt(cmd[1]));
-        else if (cmd[1].equals("copy")) {
-        	copyToDB();
-        	post = "Copied jokes to the database.";
-        }
-        else if (cmd[1].equals("count")) {
-        	//post = "You doubt me? I know " + map.size() + " clever jokes.";
-        	post = countJokes(event);
-        }
         else {
-        	System.out.println(cmd[1]);
-        	post = "...You speak gibberish. [Bot command was malformed. Type `!help joke` for more info.]";
+        	switch (cmd[1]) {
+        		case "import": post = importJokes("joke_wow", "jokes.txt");
+        			break;
+        		case "count": post = countJokes("joke_wow", event);
+        			break;
+        		default: post = "...You speak gibberish. [Bot command was malformed.]";
+        			break;
+        	}
         }
         event.getChannel().sendMessage(post).queue();
 	}
@@ -91,40 +90,52 @@ public class Joke extends Plugin {
 		else return String.format("There is no joke with that number. ...*No joke!*");
 	}
 	
-	private void copyToDB() {
+	private String importJokes(String table, String filename) {
 		try {
-			Statement s = conn.createStatement();
-			s.setQueryTimeout(30);
-			// UPDATE THIS TO PULL RESULTSET JUST ONCE
-			for (int key : map.keySet()) {
-				ResultSet rs = s.executeQuery("select * from joke_wow where id = "+key);
-				if (!rs.next()) {
-					System.out.println("ADDING JOKE: "+key);
-					PreparedStatement query = conn.prepareStatement("insert into joke_wow values(?,?)");
+			HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
+			for (int key : newJokes.keySet()) {
+				if (!map.containsKey(key)) {
+					System.out.println("ADDDING TO "+table+": joke #"+key);
+					PreparedStatement query = conn.prepareStatement("insert into "+table+" values(?,?)");
 					query.setInt(1, key);
-					query.setString(2, map.get(key));
+					query.setString(2, newJokes.get(key));
 					query.executeUpdate();
 				} 
 			}
-			s.close();
+			return "Jokes have been copied to "+table+" table.";
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return "Could not copy jokes to "+table+" table.";
 		}
 	}
 	
-	private String countJokes(MessageReceivedEvent event) {
+	private String countJokes(String table, MessageReceivedEvent event) {
 		try {
 			Statement s = conn.createStatement();
 			s.setQueryTimeout(30);
-			ResultSet rs = s.executeQuery("select count(*) from joke_wow");
+			ResultSet rs = s.executeQuery("select count(*) from "+table);
 			s.close();
-			return "There are "+rs.getFetchSize()+" jokes in the database.";
+			return "There are "+rs.getFetchSize()+" jokes in the "+table+" table.";
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "Error reading joke database.";
+			return "Error reading "+table+" table.";
 		}
+	}
+	
+	private HashMap<Integer, String> getJokeMap(String table) {
+		HashMap<Integer, String> temp = new HashMap<Integer, String>();
+		try {
+			Statement s = conn.createStatement();
+			s.setQueryTimeout(30);
+			ResultSet rs = s.executeQuery("select * from "+table);
+			while(rs.next()) {
+				temp.put(rs.getInt(0), rs.getString(1));
+			}
+			s.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return temp;
 	}
 }
 	
