@@ -55,7 +55,7 @@ public class ChatPurge extends Plugin{
 
 	@Override
 	public void handleMessage(String msg, MessageReceivedEvent event) {
-		event.getChannel().sendMessage("Attempting to purge channel history...").queue();
+		event.getChannel().sendMessage("Purging last 100 messages from this channel.").queue();
 		
 		MessageHistory history = new MessageHistory(event.getChannel());
 		history.retrievePast(100).queue(success -> {
