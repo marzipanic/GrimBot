@@ -16,7 +16,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public final class Bot {
 	
-	static String prefix = "!"; // default prefix if none specified
+	public static String prefix = "!"; // default prefix if none specified
 	static JDABuilder builder;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
 	public static final String pluginPath = System.getProperty("user.dir") 
