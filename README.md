@@ -16,7 +16,7 @@ GrimBot is being built with developers in mind. Some of its features currently i
 * **Reflection:** Plugins written for this bot by others may be dropped into the `plugins` folder, no need to recompile the code! Simply restarting the bot will load them up.
 * **Robust Help Functions:** The abstract `Plugin.java` class helps plugin writers to easily include information about the plugin into the bot's normal help commands.
 * **SQLite Database:** Plugin authors can connect to the SQLite Database built into this bot in order to add persistent storage to their plugin.
-* **Complimentary Plugins:** To help you get started, several example modules, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included.
+* **Complimentary Plugins:** To help you get started, several example modules, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included. Note the `ChatPurge.java` provides the ability to delete the last 100 messages in chat, up to 2 weeks past (due to specific cap on Discord Bots); *permissions are not yet handled, so any user can run this command!*
 
 # Setup
 To run GrimBot, you first need to acquire API keys for the services listed above. To register for those API keys, create an account with each of the services linked below, login, then create a new API key for each.
