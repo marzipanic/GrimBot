@@ -17,17 +17,16 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {
 	
-	private HashMap<Integer, String> map;
-    private List<Integer> keys;
+	private HashMap<Integer, String> wowMap;
+    private List<Integer> wowKeys;
     private Connection conn = null;
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
 		conn = Bot.db.connection;
 		Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
-		//map = Util.getBotFileAsMap("jokes.txt");
-		map = getJokeMap("joke_wow");
-        keys = new ArrayList<Integer>(map.keySet());
+		wowMap = getJokeMap("joke_wow");
+        wowKeys = new ArrayList<Integer>(wowMap.keySet());
 	}
 
 	@Override
@@ -65,10 +64,10 @@ public class Joke extends Plugin {
     	String post = "Joke is on you!";
     	String[] cmd = msg.split(" ");
         if (cmd.length == 1) post = getRandomJoke();
-        else if (Util.isInteger(cmd[1])) post = getJoke(Integer.parseInt(cmd[1]));
+        else if (Util.isInteger(cmd[1])) post = getJoke(wowMap, Integer.parseInt(cmd[1]));
         else {
         	switch (cmd[1]) {
-        		case "import": post = importJokes("joke_wow", "jokes.txt");
+        		case "import": post = importJokes(wowMap, "joke_wow", "jokes.txt");
         			break;
         		case "count": post = countJokes("joke_wow", event);
         			break;
@@ -80,17 +79,18 @@ public class Joke extends Plugin {
 	}
 	
 	private String getRandomJoke() {
+		// RESTRUCTURE THIS TO SELECT FROM RANDOM JOKE MAP; useful for handling multiple joke sets/themes
 		Random rand = new Random();
-        Integer i = rand.nextInt(keys.size());
-        return String.format("Joke # %d: %s", keys.get(i), map.get(keys.get(i)));
+        Integer i = rand.nextInt(wowKeys.size());
+        return String.format("Joke # %d: %s", wowKeys.get(i), wowMap.get(wowKeys.get(i)));
 	}
 	
-	private String getJoke(Integer i) {
+	private String getJoke(HashMap<Integer, String> map, Integer i) {
 		if (map.get(i) != null) return String.format("Joke # %d: %s", i, map.get(i));
 		else return String.format("There is no joke with that number. ...*No joke!*");
 	}
 	
-	private String importJokes(String table, String filename) {
+	private String importJokes(HashMap<Integer, String> map, String table, String filename) {
 		try {
 			HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
 			for (int key : newJokes.keySet()) {
