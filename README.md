@@ -1,5 +1,5 @@
 # GrimBot
-A Java-based chat bot built for Discord that provides chat management functionality, data storage, and (will eventually operate as an information broker for services provided by the following:
+A Java-based chat bot built for Discord that provides chat management functionality, data storage, and (eventually) operate as an information broker for services such as:
 * [Google Drive API](https://developers.google.com/drive/)
 * [Battle.Net API](https://dev.battle.net/)
 * [Riot Games API](https://developer.riotgames.com/)
