@@ -211,10 +211,10 @@ public class Joke extends Plugin {
 	}
 	
 	private String countJokes(String table, MessageReceivedEvent event) {
+		String sql = "SELECT COUNT(*) FROM "+table;
 		try {
 			Statement s = conn.createStatement();
-			s.setQueryTimeout(30);
-			ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM "+table);
+			ResultSet rs = s.executeQuery(sql);
 			int count = rs.getInt(1);
 			s.close();
 			return "There are "+count+" jokes in the "+table+" table.";
