@@ -14,11 +14,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {
     private Connection conn = null;
+    String jokeTable = "";
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
 		conn = Bot.db.connection;
-		Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
+		jokeTable = Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
 	}
 
 	@Override
@@ -55,19 +56,19 @@ public class Joke extends Plugin {
 	public void handleMessage(String msg, MessageReceivedEvent event) {
     	String post = "Joke is on you!";
     	String[] cmd = msg.split(" ");
-        if (cmd.length == 1) post = readRandomJoke("joke_wow");
-        else if (Util.isInteger(cmd[1])) post = readJoke("joke_wow", Integer.parseInt(cmd[1]));
+        if (cmd.length == 1) post = readRandomJoke(jokeTable);
+        else if (Util.isInteger(cmd[1])) post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
         else {
         	switch (cmd[1]) {
-        		case "add": post = createJoke("joke_wow", msg.split(" ",3)[2]);
+        		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
         			break;
-        		case "update": post = updateJoke("joke_wow", cmd[2], msg.split(" ",4)[3]);
+        		case "update": post = updateJoke(jokeTable, cmd[2], msg.split(" ",4)[3]);
         			break;
-        		case "delete": post = deleteJoke("joke_wow", cmd[2]);
+        		case "delete": post = deleteJoke(jokeTable, cmd[2]);
         			break;
-        		case "import": post = importJokes("joke_wow", "jokes.txt");
+        		case "import": post = importJokes(jokeTable, "jokes.txt");
     				break;
-        		case "count": post = countJokes("joke_wow", event);
+        		case "count": post = countJokes(jokeTable);
     				break;
         		default: post = "...You speak gibberish. [Bot command was malformed.]";
         			break;
@@ -186,7 +187,7 @@ public class Joke extends Plugin {
 	
 	private String importJokes(String table, String filename) {
 		HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
-		HashMap<Integer, String> oldJokes = readJokeMap("joke_wow");
+		HashMap<Integer, String> oldJokes = readJokeMap(table);
 		
 		String sql = "INSERT INTO "+table+" VALUES(?,?)";
 		try {
@@ -210,7 +211,7 @@ public class Joke extends Plugin {
 		} 
 	}
 	
-	private String countJokes(String table, MessageReceivedEvent event) {
+	private String countJokes(String table) {
 		String sql = "SELECT COUNT(*) FROM "+table;
 		try {
 			Statement s = conn.createStatement();

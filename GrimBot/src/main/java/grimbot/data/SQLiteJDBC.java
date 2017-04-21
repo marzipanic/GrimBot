@@ -20,19 +20,22 @@ public class SQLiteJDBC {
 	    System.out.println("SUCCESS: SQLite database ready.");
 	}
 	
-	public void initializeTable(String name, String columns){
+	public String initializeTable(String name, String columns){
 		String pluginName = new Exception().getStackTrace()[1].getClassName();
 		String[] split = pluginName.toLowerCase().split("\\.");
-		String query = "create table if not exists "+split[split.length -1]+"_"+name+" ("+columns+")";
+		String tableName = split[split.length -1]+"_"+name;
+		String query = "create table if not exists "+tableName+" ("+columns+")";
 		try {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(5);
 			statement.executeUpdate(query);
 			statement.close();
+			return tableName;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 	}
 }

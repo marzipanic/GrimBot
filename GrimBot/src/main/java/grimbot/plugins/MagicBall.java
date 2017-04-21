@@ -1,15 +1,24 @@
 package grimbot.plugins;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import grimbot.Util;
+import grimbot.Bot;
 import grimbot.Plugin;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class MagicBall extends Plugin{
+	private Connection conn = null;
+	String defaultTable = "";
+	String answerTable = "";
 	
 	HashMap<Integer, String> map;
     List<Integer> keys;
@@ -19,6 +28,10 @@ public class MagicBall extends Plugin{
 
 	public MagicBall() {
 		super("^(8ball|ask|crystalball|magicball)($|\\s+|\\s.+)?");
+		conn = Bot.db.connection;
+		defaultTable = Bot.db.initializeTable("defaults","id int primary key not null, response text not null");
+		answerTable = Bot.db.initializeTable("answers","id int primary key not null, response text not null");
+		
 		map = Util.getBotFileAsMap("8ball.txt");
         keys = new ArrayList<Integer>(map.keySet());
         //System.out.println(map.toString());
@@ -62,11 +75,23 @@ public class MagicBall extends Plugin{
 	public void handleMessage(String msg, MessageReceivedEvent event) {
 		String post = "";
     	String[] cmd = msg.split(" ",2);
-        if (cmd.length == 1) post = getDefaultAnswer();
-        else if (invalidQuestion(cmd[1])) post = "Who, what, where, when, why, how. Try asking me a yes or no question instead.";
-        //else if (cmd[1].trim() == "count") post = "You doubt me? I know " + map.size() + " foreseeable answers.";
-        //else if (BotUtil.isInteger(cmd[1])) post = getAnswer(Integer.parseInt(cmd[1]));
-        else post = getRandomAnswer();
+        if (cmd.length == 1) post = readRandomResponse(defaultTable);
+        else if (invalidQuestion(cmd[1])) post = "Who, what, where, when, why, how. Ask me a yes or no question instead.";
+        else {
+        	String table = cmd[1].split(" ",2)[0].toLowerCase();
+        	String params = cmd[1].split(" ",2)[1];
+        	
+        	// Pull database name for queries
+        	if (table == "default" || table == "answer") {
+        		String command = params.split(" ",2)[0];
+        		String response = params.split(" ",2)[1] == null ? "" : params.split(" ",2)[1];
+        		if (table == "answer") {
+        			post = handleCommand(answerTable, command, response);
+        		}
+        		else post = handleCommand(defaultTable, command, response);
+        	}
+        	else post = readRandomResponse(answerTable);
+        }
         event.getChannel().sendMessage(post).queue();
 	}
 	
@@ -81,7 +106,7 @@ public class MagicBall extends Plugin{
 		return false;
 	}
 	
-	private String getDefaultAnswer() {
+	private String getDefaultAnswer(String table) {
 		Random rand = new Random();
         Integer i = rand.nextInt(keysDefault.size());
         return String.format(mapDefault.get(keysDefault.get(i)));
@@ -95,11 +120,190 @@ public class MagicBall extends Plugin{
         // return String.format("Answer # %d: %s", keys.get(i), map.get(keys.get(i)));
 	}
 	
-	/* For response fetching
-	private String getAnswer(Integer i) {
-		if (map.get(i) != null) return String.format("Answer # %d: %s", i, map.get(i));
-		else return String.format("I can't alter the universe for you. [There is no answer with that number.]");
+	
+	
+	
+	
+	
+	
+	
+	
+	private String handleCommand(String table, String cmd, String res) {
+		String post = "";
+		switch (cmd) {
+			case "add": 
+				post = createResponse(table, res);
+				break;
+			case "update":
+				String[] params = res.split(" ",2);
+				post = updateResponse(table, params[0], params[1]);
+				break;
+			case "delete":
+				post = deleteResponse(table, res);
+				break;
+			case "import": 
+				// Accepts text file must be such that each line contains a new database entry formatted as:
+				//    #:response text here
+				// To issue this command successfully, must specify a the name of the text file used, including
+				// its extension. For example, to import lines from answer.txt into the answer table, enter:
+				//    !ask answer import answers.txt
+				post = importResponses(table, res);
+				break;
+			case "count": post = countResponses(table);
+				break;
+			default: post = "...You speak gibberish. [Paramater for <action> was missing or malformed.]";
+				break;
+		}
+		return post;
 	}
-	*/
+	
+	
+	private String createResponse(String table, String response) {
+		String sql = "SELECT id FROM "+table+" ORDER BY id DESC LIMIT 1";
+		try {
+			// Get highest response number
+			Statement s = conn.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			int newId = rs.getInt(1) + 1;
+			System.out.println("Highest Response #:"+newId);
+			s.close();
+			
+			// Insert response and assign id 1 higher
+			sql = "INSERT INTO "+table+" VALUES (?,?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, newId);
+			ps.setString(2, response);
+			ps.executeUpdate();
+			ps.close();
+			return "New response added to "+table+", #"+newId+" "+response;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "I'm can't do that right now. [Unable to query database for "+table+".]";
+		}
+	}
+	
+	private String readResponse(String table, int num) {
+		String result = " ";
+		System.out.println("Joke num: "+num);
+		
+		String sql = "SELECT joke FROM "+table+" WHERE id = "+num;
+		try {
+			Statement s = conn.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			if (rs.isClosed()) return "There is no response with that id #.";
+			result = "Joke #"+num+": "+rs.getString(1);
+			s.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "I can't think of any responses right now. [Unable to query database for "+table+".]";
+		}
+	}
+	
+	private String readRandomResponse(String table) {
+		String sql = "SELECT id, response FROM "+table+" ORDER BY RANDOM() LIMIT 1";
+		try {
+			Statement s = conn.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			String result = "Response #"+rs.getString(1)+": "+rs.getString(2);
+			s.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "Sorry, I can't recall that right now. [Unable to query database for "+table+".]";
+		}
+	}
+	
+	private HashMap<Integer, String> readResponseMap(String table) {
+		HashMap<Integer, String> temp = new HashMap<Integer, String>();
+		
+		String sql = "SELECT id, response FROM "+table;
+		try {
+			Statement s = conn.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			while(rs.next()) {
+				temp.put(rs.getInt(1), rs.getString(2));
+			}
+			s.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return temp;
+	}
+	
+	private String updateResponse(String table, String numString, String response) {
+		if (!Util.isInteger(numString)) return "That is not a valid number.";
+		int num = Integer.parseInt(numString);
+		if (response.equals(null)) return "Please provide response text.";
+		
+		String sql = "UPDATE "+table+" SET response = ? WHERE id = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, response);
+			ps.setInt(2, num);
+			ps.close();
+			return "Response #"+num+" in "+table+" has been updated to: "+response;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "I can't do that right now. [Unable to query database.]";
+		}
+	}
+	
+	private String deleteResponse(String table, String numString) {
+		if (!Util.isInteger(numString)) return "That is not a valid number.";
+		int num = Integer.parseInt(numString);
+		
+		String sql = "DELETE FROM "+table+" WHERE id = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, num);
+			ps.executeUpdate();
+			ps.close();
+			return "Response #"+num+" has been erased from my memory.";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "I can't do that right now. [Unable to query database.]";
+		}
+	}
+	
+	private String importResponses(String table, String filename) {
+		HashMap<Integer, String> newResponses = Util.getBotFileAsMap(filename);
+		HashMap<Integer, String> oldResponses = readResponseMap(table);
+		
+		String sql = "INSERT INTO "+table+" VALUES(?,?)";
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			for (int key : newResponses.keySet()) {
+				if (!oldResponses.containsKey(key)) {
+					System.out.println("ADDING TO "+table+": response #"+key);
+					ps.setInt(1, key);
+					ps.setString(2, newResponses.get(key));
+					ps.addBatch();
+				} 
+			}
+			ps.executeBatch();
+			conn.commit();
+			ps.close();
+			return "Responses have been copied to "+table+" table.";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "Could not copy responses to "+table+" table.";
+		} 
+	}
+	
+	private String countResponses(String table) {
+		String sql = "SELECT COUNT(*) FROM "+table;
+		try {
+			Statement s = conn.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			int count = rs.getInt(1);
+			s.close();
+			return "There are "+count+" responses in the "+table+" table.";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "Error reading "+table+" table.";
+		}
+	}
 
 }
