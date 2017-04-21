@@ -20,7 +20,15 @@ public class Config {
 	}
 	
 	public String getGame() {
-		return config.getString("game").toString();
+		String game = config.getString("game").toString();
+		if (game.equals("")) game = "with Java!"; // Default if blank
+		return game;
+	}
+	
+	public String getGameLink() {
+		String game = config.getString("gamelink").toString();
+		if (game.equals("")) game = "https://github.com/marzipanic/GrimBot"; // Default if blank
+		return game;
 	}
 	
 	public String getToken() {
@@ -28,6 +36,8 @@ public class Config {
 	}
 	
 	public String getPrefix() {
+		String prefix = config.getString("prefix").toString();
+		if (prefix.equals("")) prefix = "!"; // Default if blank
 		return config.getString("prefix").toString();
 	}
 	

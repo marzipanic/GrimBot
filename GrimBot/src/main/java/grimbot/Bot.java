@@ -9,14 +9,14 @@ import java.util.List;
 import javax.security.auth.login.LoginException;
 
 import grimbot.data.SQLiteJDBC;
-//import grimbot.Plugin;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public final class Bot {
 	
-	public static String prefix = "!"; // default prefix if none specified
+	public static String prefix = "";
 	static JDABuilder builder;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
 	public static final String pluginPath = System.getProperty("user.dir") 
@@ -29,9 +29,9 @@ public final class Bot {
 		prefix = config.getPrefix();
 		builder = new JDABuilder(AccountType.BOT)
 				.setToken(config.getToken())
+				.setGame(Game.of(config.getGame(), config.getGameLink()))
 	        	.setBulkDeleteSplittingEnabled(false)
 	        	.setAutoReconnect(true);
-		
 	}
 	
 	public void Connect() {
