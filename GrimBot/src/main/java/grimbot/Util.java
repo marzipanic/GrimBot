@@ -22,7 +22,6 @@ public class Util {
         }
 	}
 	
-	
 	public static String[] getBotFileAsString(String path) {
 		try {
 			String file = new String(Files.readAllBytes(Paths.get(path)));
