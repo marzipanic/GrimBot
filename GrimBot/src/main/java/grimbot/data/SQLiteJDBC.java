@@ -26,7 +26,7 @@ public class SQLiteJDBC {
 		String query = "create table if not exists "+split[split.length -1]+"_"+name+" ("+columns+")";
 		try {
 			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30);
+			statement.setQueryTimeout(5);
 			statement.executeUpdate(query);
 			statement.close();
 			
