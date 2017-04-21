@@ -35,7 +35,9 @@ public class ChatListener extends ListenerAdapter {
 				msg = msg.substring(Bot.prefix.length());
 				
 				// Handle help commands
-				if(help.matcher(msg).matches()) help(author, msg, event);
+				if(help.matcher(msg).matches()) {
+					help(author, msg, event);
+				}
 				
 				// Handle all other commands
 				else {
@@ -97,12 +99,16 @@ public class ChatListener extends ListenerAdapter {
 
 		// !help response
 		private void buildMenuText(Plugin p) {
-			if (p.getPrimaryAlias() != null) menuText +="\n`" + Bot.prefix + p.getPrimaryAlias();
+			if (p.getPrimaryAlias() != null) {
+				menuText +="\n`" + Bot.prefix + p.getPrimaryAlias();
+			}
 			if (p.getParameters() != null) {
 				String[] parameters = p.getParameters();
 				for (int i=0; i<parameters.length; i++) menuText += " <" + parameters[i] + ">";
 			}
-			if (p.getUsage() != null) menuText +="` - "+ p.getUsage();
+			if (p.getUsage() != null) {
+				menuText +="` - "+ p.getUsage();
+			}
 		}
 		
 		// !help <pluginname> response
@@ -113,7 +119,9 @@ public class ChatListener extends ListenerAdapter {
 			String desc = p.getDescription();
 			String[] ex = p.getExamples();
 			
-			if (name != null) pluginText +="\n**Command:** `" + Bot.prefix + name;
+			if (name != null) {
+				pluginText +="\n**Command:** `" + Bot.prefix + name;
+			}
 			if (params != null) {
 				for (int i=0; i<params.length; i++) pluginText += " <" + params[i] + ">";
 			}
@@ -121,7 +129,9 @@ public class ChatListener extends ListenerAdapter {
 			if (aliases != null) {
 				for (int i=0; i<aliases.length; i++) pluginText += " `" + Bot.prefix + aliases[i] + "`";
 			}
-			if (desc != null) pluginText +="\n**Description:** " + desc;
+			if (desc != null) {
+				pluginText +="\n**Description:** " + desc;
+			}
 			if (ex != null) {
 				pluginText += "\n**Examples:** ";
 				for (int i=0; i<ex.length; i++) pluginText += "\n• `" + ex[i] + "`";
