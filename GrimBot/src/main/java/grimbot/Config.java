@@ -75,9 +75,11 @@ public class Config {
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR: Config file could not be found.");
 			e.printStackTrace();
+			System.exit(1);
 		} catch (UnsupportedEncodingException e) {
 			System.out.println("ERROR: Config file encoding was not supported.");
 			e.printStackTrace();
+			System.exit(1);
 		}
 		
 		System.out.println("ERROR: Config file could not be found; a new config file has been created for you as "+filename
