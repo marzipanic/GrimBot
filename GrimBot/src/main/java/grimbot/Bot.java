@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 public final class Bot {
 	
 	public static String prefix = "";
-	static JDABuilder builder;
+	private static JDABuilder builder;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
 	public static final String pluginPath = System.getProperty("user.dir") 
 			+ File.separator + "target" + File.separator + "classes" 
