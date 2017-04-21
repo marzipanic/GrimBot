@@ -28,7 +28,7 @@ public class MagicBall extends Plugin{
 
 	public MagicBall() {
 		super("^(8ball|ask|crystalball|magicball)($|\\s+|\\s.+)?");
-		conn = Bot.db.connection;
+		conn = Bot.db.conn;
 		defaultTable = Bot.db.initializeTable("defaults","id int primary key not null, response text not null");
 		answerTable = Bot.db.initializeTable("answers","id int primary key not null, response text not null");
 		
@@ -106,6 +106,7 @@ public class MagicBall extends Plugin{
 		return false;
 	}
 	
+	/*
 	private String getDefaultAnswer(String table) {
 		Random rand = new Random();
         Integer i = rand.nextInt(keysDefault.size());
@@ -118,15 +119,7 @@ public class MagicBall extends Plugin{
         Integer i = rand.nextInt(keys.size());
         return String.format(map.get(keys.get(i)));
         // return String.format("Answer # %d: %s", keys.get(i), map.get(keys.get(i)));
-	}
-	
-	
-	
-	
-	
-	
-	
-	
+	}*/
 	
 	private String handleCommand(String table, String cmd, String res) {
 		String post = "";
@@ -144,7 +137,7 @@ public class MagicBall extends Plugin{
 			case "import": 
 				// Accepts text file must be such that each line contains a new database entry formatted as:
 				//    #:response text here
-				// To issue this command successfully, must specify a the name of the text file used, including
+				// To issue this command successfully, must specify the name of the text file used, including
 				// its extension. For example, to import lines from answer.txt into the answer table, enter:
 				//    !ask answer import answers.txt
 				post = importResponses(table, res);
@@ -162,17 +155,18 @@ public class MagicBall extends Plugin{
 		String sql = "SELECT id FROM "+table+" ORDER BY id DESC LIMIT 1";
 		try {
 			// Get highest response number
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ResultSet rs = ps.executeQuery();
 			int newId = rs.getInt(1) + 1;
 			System.out.println("Highest Response #:"+newId);
-			s.close();
 			
 			// Insert response and assign id 1 higher
-			sql = "INSERT INTO "+table+" VALUES (?,?)";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, newId);
-			ps.setString(2, response);
+			sql = "INSERT INTO ? VALUES (?,?)";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ps.setInt(2, newId);
+			ps.setString(3, response);
 			ps.executeUpdate();
 			ps.close();
 			return "New response added to "+table+", #"+newId+" "+response;
@@ -184,15 +178,17 @@ public class MagicBall extends Plugin{
 	
 	private String readResponse(String table, int num) {
 		String result = " ";
-		System.out.println("Joke num: "+num);
+		System.out.println("Response num: "+num);
 		
-		String sql = "SELECT joke FROM "+table+" WHERE id = "+num;
+		String sql = "SELECT response FROM ? WHERE id = ?";
 		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ps.setInt(2, num);
+			ResultSet rs = ps.executeQuery();
 			if (rs.isClosed()) return "There is no response with that id #.";
 			result = "Joke #"+num+": "+rs.getString(1);
-			s.close();
+			ps.close();
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -201,12 +197,13 @@ public class MagicBall extends Plugin{
 	}
 	
 	private String readRandomResponse(String table) {
-		String sql = "SELECT id, response FROM "+table+" ORDER BY RANDOM() LIMIT 1";
+		String sql = "SELECT id, response FROM ? ORDER BY RANDOM() LIMIT 1";
 		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ResultSet rs = ps.executeQuery();
 			String result = "Response #"+rs.getString(1)+": "+rs.getString(2);
-			s.close();
+			ps.close();
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -217,16 +214,17 @@ public class MagicBall extends Plugin{
 	private HashMap<Integer, String> readResponseMap(String table) {
 		HashMap<Integer, String> temp = new HashMap<Integer, String>();
 		
-		String sql = "SELECT id, response FROM "+table;
+		String sql = "SELECT id, response FROM ?";
 		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				temp.put(rs.getInt(1), rs.getString(2));
 			}
-			s.close();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return temp;
 	}
@@ -236,11 +234,12 @@ public class MagicBall extends Plugin{
 		int num = Integer.parseInt(numString);
 		if (response.equals(null)) return "Please provide response text.";
 		
-		String sql = "UPDATE "+table+" SET response = ? WHERE id = ?";
+		String sql = "UPDATE ? SET response = ? WHERE id = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, response);
-			ps.setInt(2, num);
+			ps.setString(1, table);
+			ps.setString(2, response);
+			ps.setInt(3, num);
 			ps.close();
 			return "Response #"+num+" in "+table+" has been updated to: "+response;
 		} catch (SQLException e) {
@@ -253,10 +252,11 @@ public class MagicBall extends Plugin{
 		if (!Util.isInteger(numString)) return "That is not a valid number.";
 		int num = Integer.parseInt(numString);
 		
-		String sql = "DELETE FROM "+table+" WHERE id = ?";
+		String sql = "DELETE FROM ? WHERE id = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, num);
+			ps.setString(1, table);
+			ps.setInt(2, num);
 			ps.executeUpdate();
 			ps.close();
 			return "Response #"+num+" has been erased from my memory.";
@@ -270,10 +270,11 @@ public class MagicBall extends Plugin{
 		HashMap<Integer, String> newResponses = Util.getBotFileAsMap(filename);
 		HashMap<Integer, String> oldResponses = readResponseMap(table);
 		
-		String sql = "INSERT INTO "+table+" VALUES(?,?)";
+		String sql = "INSERT INTO ? VALUES(?,?)";
 		try {
 			conn.setAutoCommit(false);
 			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
 			for (int key : newResponses.keySet()) {
 				if (!oldResponses.containsKey(key)) {
 					System.out.println("ADDING TO "+table+": response #"+key);
@@ -293,12 +294,13 @@ public class MagicBall extends Plugin{
 	}
 	
 	private String countResponses(String table) {
-		String sql = "SELECT COUNT(*) FROM "+table;
+		String sql = "SELECT COUNT(*) FROM ?";
 		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, table);
+			ResultSet rs = ps.executeQuery(sql);
 			int count = rs.getInt(1);
-			s.close();
+			ps.close();
 			return "There are "+count+" responses in the "+table+" table.";
 		} catch (SQLException e) {
 			e.printStackTrace();
