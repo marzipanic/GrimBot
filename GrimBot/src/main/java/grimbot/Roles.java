@@ -1,7 +1,9 @@
 package grimbot;
 
 // Permission Levels
-public class Permission {
+public class Roles {
+	
+	
 	
 	public enum Perm {
 		// Listed in order of least to most permissions
@@ -12,8 +14,7 @@ public class Permission {
 		APPROVED_USER,
 		SERVER_MODERATOR,
 		SERVER_ADMIN,
-		SERVER_OWNER,
-		CREATOR;
+		SERVER_OWNER;
 		
 		public Perm getPerm(String r) {
 			for (Perm perm : values()) {

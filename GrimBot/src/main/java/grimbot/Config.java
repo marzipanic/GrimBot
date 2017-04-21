@@ -80,8 +80,8 @@ public class Config {
 			e.printStackTrace();
 		}
 		
-		System.out.println("ERROR: Config file could not be found; a new config file was created as "+filename
-				+ "\nTo run this bot, you must update the AT MINIMUM the following config properties:"
+		System.out.println("ERROR: Config file could not be found; a new config file has been created for you as "+filename
+				+ "\nTo run this bot, you must update the following config properties:"
 				+ "\n'token': Create a new App and Bot User through the Discord Developer website, then paste the bot user token here.");
 	}
 }
