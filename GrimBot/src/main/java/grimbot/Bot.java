@@ -26,10 +26,11 @@ public final class Bot {
 	
 	public Bot(Config config, SQLiteJDBC database) {
 		db = database;
-		prefix = config.getPrefix();
+		prefix = config.getSetting("prefix", "!");
 		builder = new JDABuilder(AccountType.BOT)
-				.setToken(config.getToken())
-				.setGame(Game.of(config.getGame(), config.getGameLink()))
+				.setToken(config.getSetting("token", ""))
+				.setGame(Game.of(config.getSetting("game", "with Java."), 
+						config.getSetting("gamelink", "https://github.com/marzipanic/GrimBot")))
 	        	.setBulkDeleteSplittingEnabled(false)
 	        	.setAutoReconnect(true);
 	}

@@ -26,11 +26,9 @@ public class SQLiteJDBC {
 		String pluginName = new Exception().getStackTrace()[1].getClassName();
 		String[] split = pluginName.toLowerCase().split("\\.");
 		String tableName = split[split.length -1]+"_"+name;
-		String sql = "CREATE TABLE IF NOT EXISTS ? (?)";
+		String sql = "CREATE TABLE IF NOT EXISTS "+tableName+" ("+columns+")";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, tableName);
-			ps.setString(2, columns);
 			ps.executeUpdate();
 			ps.close();
 			return tableName;

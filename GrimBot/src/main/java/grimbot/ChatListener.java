@@ -102,10 +102,10 @@ public class ChatListener extends ListenerAdapter {
 			if (p.getPrimaryAlias() != null) {
 				menuText +="\n`" + Bot.prefix + p.getPrimaryAlias();
 			}
-			if (p.getParameters() != null) {
+			/*if (p.getParameters() != null) {
 				String[] parameters = p.getParameters();
 				for (int i=0; i<parameters.length; i++) menuText += " <" + parameters[i] + ">";
-			}
+			}*/
 			if (p.getUsage() != null) {
 				menuText +="` - "+ p.getUsage();
 			}
@@ -134,7 +134,7 @@ public class ChatListener extends ListenerAdapter {
 			}
 			if (ex != null) {
 				pluginText += "\n**Examples:** ";
-				for (int i=0; i<ex.length; i++) pluginText += "\n• `" + ex[i] + "`";
+				for (int i=0; i<ex.length; i++) pluginText += "\n`" + Bot.prefix + ex[i] + "`";
 			}
 			
 		};

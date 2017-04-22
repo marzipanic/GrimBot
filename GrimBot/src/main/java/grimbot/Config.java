@@ -19,15 +19,24 @@ public class Config {
 		LoadConfig(f);
 	}
 	
-	public String getGame() {
-		String game = config.getString("game").toString();
-		if (game.equals("")) game = "with Java!"; // Default if blank
+	/*public String getGame() {
+		String game = "";
+		try {
+			game = config.getString("game").toString();
+		} catch (Exception e) {
+			game = "with Java!"; // Default if blank
+		}
 		return game;
 	}
 	
 	public String getGameLink() {
-		String game = config.getString("gamelink").toString();
-		if (game.equals("")) game = "https://github.com/marzipanic/GrimBot"; // Default if blank
+		String gameLink = "https://github.com/marzipanic/GrimBot";
+		try {
+			String game = config.getString("gamelink").toString();
+		} catch (Exception e) {
+			System.out.println("ERROR: No gamelink set in config");
+		}
+		if (game.equals("") || game == null) game = "https://github.com/marzipanic/GrimBot"; // Default if blank
 		return game;
 	}
 	
@@ -39,6 +48,16 @@ public class Config {
 		String prefix = config.getString("prefix").toString();
 		if (prefix.equals("")) prefix = "!"; // Default if blank
 		return config.getString("prefix").toString();
+	}*/
+	
+	public String getSetting(String option, String defaultSetting) {
+		String setting = defaultSetting;
+		try {
+			setting = config.getString(option).toString();
+		} catch (Exception e) {
+			System.out.println("ERROR: Could not find setting for "+option);
+		}
+		return setting;
 	}
 	
 	

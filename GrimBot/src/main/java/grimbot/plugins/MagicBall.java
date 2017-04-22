@@ -20,11 +20,11 @@ public class MagicBall extends Plugin{
 	String defaultTable = "";
 	String answerTable = "";
 	
-	HashMap<Integer, String> map;
+	/*HashMap<Integer, String> map;
     List<Integer> keys;
     
     HashMap<Integer, String> mapDefault;
-    List<Integer> keysDefault;
+    List<Integer> keysDefault;*/
 
 	public MagicBall() {
 		super("^(8ball|ask|crystalball|magicball)($|\\s+|\\s.+)?");
@@ -32,11 +32,11 @@ public class MagicBall extends Plugin{
 		defaultTable = Bot.db.initializeTable("defaults","id int primary key not null, response text not null");
 		answerTable = Bot.db.initializeTable("answers","id int primary key not null, response text not null");
 		
-		map = Util.getBotFileAsMap("8ball.txt");
+		/*map = Util.getBotFileAsMap("8ball.txt");
         keys = new ArrayList<Integer>(map.keySet());
         //System.out.println(map.toString());
         mapDefault = Util.getBotFileAsMap("8balldefault.txt");
-        keysDefault = new ArrayList<Integer>(mapDefault.keySet());
+        keysDefault = new ArrayList<Integer>(mapDefault.keySet());*/
 	}
 
 	@Override
