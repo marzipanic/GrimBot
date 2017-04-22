@@ -57,7 +57,6 @@ public class Joke extends Plugin {
     	String post = "Joke is on you!";
     	String[] cmd = msg.split(" ");
         if (cmd.length == 1) post = readRandomJoke(jokeTable);
-        else if (Util.isInteger(cmd[1])) post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
         else {
         	switch (cmd[1]) {
         		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
@@ -70,7 +69,12 @@ public class Joke extends Plugin {
     				break;
         		case "count": post = countJokes(jokeTable);
     				break;
-        		default: post = "...You speak gibberish. [Bot command was malformed.]";
+        		default: 
+        			if (Util.isInteger(cmd[1])) {
+        				post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
+        			} else {
+        				post = "...You speak gibberish. [Bot command was malformed.]";
+        			}
         			break;
         	}
         }
@@ -78,21 +82,19 @@ public class Joke extends Plugin {
 	}
 	
 	private String createJoke(String table, String joke) {
-		String sql = "SELECT id FROM ? ORDER BY id DESC LIMIT 1";
+		String sql = "SELECT id FROM "+table+" ORDER BY id DESC LIMIT 1";
 		try {
 			// Get highest joke number
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
 			ResultSet rs = ps.executeQuery(sql);
 			int newId = rs.getInt(1) + 1;
 			System.out.println("Highest Joke #:"+newId);
 			
 			// Insert joke and assign id 1 higher
-			sql = "INSERT INTO ? VALUES (?,?)";
+			sql = "INSERT INTO "+table+" VALUES (?,?)";
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
-			ps.setInt(2, newId);
-			ps.setString(3, joke);
+			ps.setInt(1, newId);
+			ps.setString(2, joke);
 			ps.executeUpdate();
 			ps.close();
 			return "New joke added, #"+newId+" "+joke;
@@ -106,11 +108,10 @@ public class Joke extends Plugin {
 		String result = " ";
 		System.out.println("Joke num: "+num);
 		
-		String sql = "SELECT joke FROM ? WHERE id = ?";
+		String sql = "SELECT joke FROM "+table+" WHERE id = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
-			ps.setInt(2, num);
+			ps.setInt(1, num);
 			ResultSet rs = ps.executeQuery();
 			if (rs.isClosed()) return "There is no joke with that id #.";
 			result = "Joke #"+num+": "+rs.getString(1);
@@ -123,10 +124,9 @@ public class Joke extends Plugin {
 	}
 	
 	private String readRandomJoke(String table) {
-		String sql = "SELECT id, joke FROM ? ORDER BY RANDOM() LIMIT 1";
+		String sql = "SELECT id, joke FROM "+table+" ORDER BY RANDOM() LIMIT 1";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
 			ResultSet rs = ps.executeQuery();
 			String result = "Joke #"+rs.getString(1)+": "+rs.getString(2);
 			ps.close();
@@ -140,10 +140,9 @@ public class Joke extends Plugin {
 	private HashMap<Integer, String> readJokeMap(String table) {
 		HashMap<Integer, String> temp = new HashMap<Integer, String>();
 		
-		String sql = "SELECT id, joke FROM ?";
+		String sql = "SELECT id, joke FROM "+table;
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				temp.put(rs.getInt(1), rs.getString(2));
@@ -160,12 +159,11 @@ public class Joke extends Plugin {
 		int num = Integer.parseInt(numString);
 		if (joke.equals(null)) return "Please provide a joke.";
 		
-		String sql = "UPDATE ? SET joke = ? WHERE id = ?";
+		String sql = "UPDATE "+table+" SET joke = ? WHERE id = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
-			ps.setString(2, joke);
-			ps.setInt(3, num);
+			ps.setString(1, joke);
+			ps.setInt(2, num);
 			ps.executeUpdate();
 			ps.close();
 			return "Joke #"+num+" has been updated to: "+joke;
@@ -179,11 +177,10 @@ public class Joke extends Plugin {
 		if (!Util.isInteger(numString)) return "That is not a valid number.";
 		int num = Integer.parseInt(numString);
 		
-		String sql = "DELETE FROM ? WHERE id = ?";
+		String sql = "DELETE FROM "+table+" WHERE id = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
-			ps.setInt(2, num);
+			ps.setInt(1, num);
 			ps.executeUpdate();
 			ps.close();
 			return "Joke #"+num+" has been erased from my memory.";
@@ -197,16 +194,15 @@ public class Joke extends Plugin {
 		HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
 		HashMap<Integer, String> oldJokes = readJokeMap(table);
 		
-		String sql = "INSERT INTO ? VALUES(?,?)";
+		String sql = "INSERT INTO "+table+" VALUES(?,?)";
 		try {
 			conn.setAutoCommit(false);
 			PreparedStatement ps = conn.prepareStatement(sql);
 			for (int key : newJokes.keySet()) {
 				if (!oldJokes.containsKey(key)) {
 					System.out.println("ADDING TO "+table+": joke #"+key);
-					ps.setString(1, table);
-					ps.setInt(2, key);
-					ps.setString(3, newJokes.get(key));
+					ps.setInt(1, key);
+					ps.setString(2, newJokes.get(key));
 					ps.addBatch();
 				} 
 			}
@@ -221,10 +217,9 @@ public class Joke extends Plugin {
 	}
 	
 	private String countJokes(String table) {
-		String sql = "SELECT COUNT(*) FROM ?";
+		String sql = "SELECT COUNT(*) FROM "+table;
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, table);
 			ResultSet rs = ps.executeQuery();
 			int count = rs.getInt(1);
 			ps.close();
