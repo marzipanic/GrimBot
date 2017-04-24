@@ -31,6 +31,7 @@ public class SQLiteJDBC {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 			ps.close();
+			System.out.println("DATABASE: table "+tableName+" loaded.");
 			return tableName;
 			
 		} catch (SQLException e) {
