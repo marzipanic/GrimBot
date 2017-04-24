@@ -6,10 +6,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import grimbot.Plugin;
 import net.dv8tion.jda.core.entities.MessageHistory;
@@ -80,7 +78,6 @@ public class ChatPurge extends Plugin{
 					}
 					writer.close();
 				} catch (FileNotFoundException | UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				TextChannel channel = (TextChannel) event.getChannel();
