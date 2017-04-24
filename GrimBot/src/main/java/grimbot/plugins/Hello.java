@@ -87,7 +87,7 @@ public class Hello extends Plugin{
 		try {
 			// Get highest response number
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery(sql);
+			ResultSet rs = ps.executeQuery();
 			int newId = rs.getInt(1) + 1;
 			System.out.println("Highest response #:"+newId);
 			
