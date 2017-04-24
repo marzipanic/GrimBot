@@ -30,6 +30,11 @@
 	  <artifactId>google-oauth-client-jetty</artifactId>
 	  <version>1.22.0</version>
 	</dependency>
+	<dependency>
+	  <groupId>com.squareup.okhttp3</groupId>
+	  <artifactId>okhttp</artifactId>
+	  <version>3.7.0</version>
+	</dependency>
   </dependencies>
   
   <repositories>
