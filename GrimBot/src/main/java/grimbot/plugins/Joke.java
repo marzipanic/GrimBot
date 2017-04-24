@@ -14,12 +14,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {
     private Connection conn = null;
-    String jokeTable = "";
+    String jokes = "";
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
 		conn = Bot.db.conn;
-		jokeTable = Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
+		jokes = Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
 	}
 
 	@Override
@@ -56,22 +56,22 @@ public class Joke extends Plugin {
 	public void handleMessage(String msg, MessageReceivedEvent event) {
     	String post = "Joke is on you!";
     	String[] cmd = msg.split(" ");
-        if (cmd.length == 1) post = readRandomJoke(jokeTable);
+        if (cmd.length == 1) post = readRandomJoke(jokes);
         else {
         	switch (cmd[1]) {
-        		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
+        		case "add": post = createJoke(jokes, msg.split(" ",3)[2]);
         			break;
-        		case "update": post = updateJoke(jokeTable, cmd[2], msg.split(" ",4)[3]);
+        		case "update": post = updateJoke(jokes, cmd[2], msg.split(" ",4)[3]);
         			break;
-        		case "delete": post = deleteJoke(jokeTable, cmd[2]);
+        		case "delete": post = deleteJoke(jokes, cmd[2]);
         			break;
-        		case "import": post = importJokes(jokeTable, "jokes.txt");
+        		case "import": post = importJokes(jokes, "jokes.txt");
     				break;
-        		case "count": post = countJokes(jokeTable);
+        		case "count": post = countJokes(jokes);
     				break;
         		default: 
         			if (Util.isInteger(cmd[1])) {
-        				post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
+        				post = readJoke(jokes, Integer.parseInt(cmd[1]));
         			} else {
         				post = "...You speak gibberish. [Bot command was malformed.]";
         			}
@@ -229,6 +229,19 @@ public class Joke extends Plugin {
 			return "Error reading "+table+" table.";
 		}
 	}
+	
+	// Placeholders for handling multiple joke tables.
+	private boolean isValidTable(String table) {
+		if (table.equals("jokes")) return true;
+		else return false;
+	}
+	
+	// Placeholders for handling multiple joke tables.
+	private String getTable(String table) {
+		if (table.equals("jokes")) return jokes;
+		else return null;
+	}
+	
 }
 	
 
