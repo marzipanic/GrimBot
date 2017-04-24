@@ -173,7 +173,7 @@ public class MagicBall extends Plugin{
 			ps.setString(2, response);
 			ps.executeUpdate();
 			ps.close();
-			return "New response added to "+table+", #"+newId+" "+response;
+			return "[New response added to "+table+", #"+newId+" "+response+"]";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "[Unable to create new entry for table "+table+".]";
@@ -189,8 +189,8 @@ public class MagicBall extends Plugin{
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, num);
 			ResultSet rs = ps.executeQuery();
-			if (rs.isClosed()) return "There is no response with that id #.";
-			result = "Joke #"+num+": "+rs.getString(1);
+			if (rs.isClosed()) return "[There is no response with that id #.]";
+			result = "Response #"+num+": "+rs.getString(1);
 			ps.close();
 			return result;
 		} catch (SQLException e) {
@@ -204,7 +204,8 @@ public class MagicBall extends Plugin{
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			String result = "Response #"+rs.getString(1)+": "+rs.getString(2);
+			//String result = "Response #"+rs.getString(1)+": "+rs.getString(2);
+			String result = rs.getString(2);
 			ps.close();
 			return result;
 		} catch (SQLException e) {
@@ -233,7 +234,7 @@ public class MagicBall extends Plugin{
 	private String updateResponse(String table, String numString, String response) {
 		if (!Util.isInteger(numString)) return "That is not a valid number.";
 		int num = Integer.parseInt(numString);
-		if (response.equals(null)) return "Please provide response text.";
+		if (response.equals(null)) return "[Please provide response text.]";
 		
 		String sql = "UPDATE "+table+" SET response = ? WHERE id = ?";
 		try {
@@ -241,7 +242,7 @@ public class MagicBall extends Plugin{
 			ps.setString(1, response);
 			ps.setInt(2, num);
 			ps.close();
-			return "Response #"+num+" in "+table+" has been updated to: "+response;
+			return "[Response #"+num+" in "+table+" has been updated to: "+response+"]";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "[Unable to query database.]";
@@ -260,7 +261,7 @@ public class MagicBall extends Plugin{
 			ps.setInt(1, num);
 			ps.executeUpdate();
 			ps.close();
-			return "Response #"+num+" has been erased from my memory.";
+			return "[Response #"+num+" has been removed.]";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "[Unable to query database.]";
