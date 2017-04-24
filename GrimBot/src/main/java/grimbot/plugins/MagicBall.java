@@ -1,5 +1,6 @@
 package grimbot.plugins;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -270,7 +271,7 @@ public class MagicBall extends Plugin{
 	
 	private String importResponses(String table, String filename) {
 		System.out.println("Importing "+filename+" to "+table);
-		HashMap<Integer, String> newResponses = Util.getBotFileAsMap(filename);
+		HashMap<Integer, String> newResponses = Util.getBotFileAsMap("imports"+File.separator+filename);
 		HashMap<Integer, String> oldResponses = readResponseMap(table);
 		
 		String sql = "INSERT INTO "+table+" VALUES(?,?)";

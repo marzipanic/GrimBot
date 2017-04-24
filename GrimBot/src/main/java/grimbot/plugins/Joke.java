@@ -1,5 +1,6 @@
 package grimbot.plugins;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -191,7 +192,7 @@ public class Joke extends Plugin {
 	}
 	
 	private String importJokes(String table, String filename) {
-		HashMap<Integer, String> newJokes = Util.getBotFileAsMap(filename);
+		HashMap<Integer, String> newJokes = Util.getBotFileAsMap("imports"+File.separator+filename);
 		HashMap<Integer, String> oldJokes = readJokeMap(table);
 		
 		String sql = "INSERT INTO "+table+" VALUES(?,?)";
