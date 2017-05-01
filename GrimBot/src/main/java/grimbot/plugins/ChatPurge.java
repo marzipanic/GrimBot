@@ -226,18 +226,15 @@ public class ChatPurge extends Plugin{
 			String[] split = str.split("d");
 			str = str.substring(str.indexOf("d")+1);
 			days = Integer.parseInt(split[0]);
-			System.out.println("Before d: "+split[0]);
 		}
 		if (hourRegex.matcher(str).matches()) {
 			String[] split = str.split("h");
 			str = str.substring(str.indexOf("h")+1);
 			hours = Integer.parseInt(split[0]);
-			System.out.println("Before h: "+split[0]);
 		}
 		if (minuteRegex.matcher(str).matches()) {
 			String[] split = str.split("m");
 			hours = Integer.parseInt(split[0]);
-			System.out.println("Before m: "+split[0]);
 		}
 		return days*1440 + hours*60 + minutes;
 	}
