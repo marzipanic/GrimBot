@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class About extends Plugin{
 
 	public About() {
-		super("^about($|\\s+|\\s.+)?");
+		super("^(about|info)$");
 	}
 
 	@Override
@@ -33,12 +33,12 @@ public class About extends Plugin{
 
 	@Override
 	public String getDescription() {
-		return "Provides bot info.";
+		return "Provides a information about the bot's persona, creation, and sourcecode.";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return null;
+		return new String[] {"about", "info"};
 	}
 
 	@Override
@@ -59,8 +59,13 @@ public class About extends Plugin{
             eb.setFooter("Bot built by Marzipanic#4639", event.getJDA().getUserById("140901708493619200").getEffectiveAvatarUrl());
             eb.setDescription("__**Attributes**__ "
             		+ "\n**Name:** Atticus P. Grimthorpe"
-            		+ "\n**Description:** As a floating, supernatural skull, what Grim lacks in corporeal limbs he makes up for in wit and candor. A large, sanguine-hued garnet sits tightly wedged in his left eye-socket; he claims it gives him divining power. Black runes etch his bones."
             		+ "\n**Psuedonym:** \"GrimBot\""
+            		+ "\n**Description:** As a floating, supernatural skull, what Grim lacks in corporeal "
+            		+ "limbs he makes up for in wit and candor. A large, sanguine-hued garnet sits tightly "
+            		+ "wedged in his left eye-socket; he claims it gives him divining power. Black runes "
+            		+ "etch his bones."
+            		+ "\n**Purpose:** To broker information from various services to Discord, offer improved"
+            		+ " chat maintenance features, and provide other fun tools for gamers."
             		+ "\n**Website:** https://github.com/marzipanic/GrimBot"
             		+ "\n\nEnter `"+Bot.prefix+"help` for a list of commands.");
             MessageEmbed e = eb.build();
