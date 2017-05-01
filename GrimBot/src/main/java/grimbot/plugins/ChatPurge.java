@@ -8,13 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import grimbot.Bot;
 import grimbot.Plugin;
 import grimbot.Util;
 import net.dv8tion.jda.core.entities.MessageHistory;
@@ -52,17 +50,24 @@ public class ChatPurge extends Plugin{
 
 	@Override
 	public String getDescription() {
-		return "Saves the chat history for the specified channel to a text file, then deletes that chat history from Discord. For safety, if the channel name is left blank, nothing happens.";
+		return "Deletes chat history from the current channel. Multiple options for the command "
+				+ "exist, including: "
+				+ "\n\n`all` - deletes all messages within last 2 weeks."
+				+ "\n`#` - deletes last # amount of messages."
+				+ "\n`#d#h#m` - deletes messages up to # days, # hours, and # minutes, up to 2 weeks."
+				+ "\n\nFull channel deletion may be available on a future Discord update. For more information"
+				+ "about the current bot limitations, please read here: "
+				+ "https://github.com/hammerandchisel/discord-api-docs/issues/208";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"purge #general"};
+		return new String[] {"purge", "purge all", "purge 2d14h30m", "purge 20m"};
 	}
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"text channel name"};
+		return new String[] {"all | # | #d#h#m"};
 	}
 
 	@Override
