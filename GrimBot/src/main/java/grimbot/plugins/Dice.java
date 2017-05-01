@@ -34,7 +34,7 @@ public class Dice extends Plugin {
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"roll", "roll d20", "roll 20d1000000"};
+		return new String[] {"roll", "roll d6", "roll 20d1000000"};
 	}
 
 	@Override
