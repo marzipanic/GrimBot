@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class Coin extends Plugin{
 
 	public Coin() {
-		super("^coin($|\\s+|\\s.+)?");
+		super("^coin$");
 	}
 
 	@Override
