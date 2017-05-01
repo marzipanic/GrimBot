@@ -2,14 +2,21 @@ package grimbot.plugins;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import grimbot.Bot;
 import grimbot.Plugin;
+import grimbot.Util;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -17,7 +24,13 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ChatPurge extends Plugin{
-
+	
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+	private static Pattern intervalRegex = Pattern.compile("^(([0-9]|1[0-4])d)?(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h)?(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m)?");
+	private static Pattern dayRegex = Pattern.compile("(([0-9]|1[0-4])d){1}");
+	private static Pattern hourRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h){1}");
+	private static Pattern minuteRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m){1}");
+	
 	public ChatPurge() {
 		super("^purge($|\\s+|\\s.+)?");
 	}
@@ -55,35 +68,187 @@ public class ChatPurge extends Plugin{
 	@Override
 	public void handleMessage(String msg, MessageReceivedEvent event) {
 		if (event.isFromType(ChannelType.PRIVATE)) {
-			event.getChannel().sendMessage("I cannot purge messages from a direct message channel.").queue();
+			sendDM(event, "[Cannot purge messages from a direct message channel.]");
 		} else {
-			event.getChannel().sendMessage("Purging last 100 messages from this channel.").queue();
+	    	String[] cmd = msg.split(" ");
+	        if (cmd.length == 1) {
+	        	purge("100", event);
+	        }
+	        else {
+	        	switch (cmd[1]) {
+	        		case "all":
+	        			sendDM(event, "[Purging all messages within last 2 weeks from #"+event.getChannel().getName()+"]");
+	        			purgeAll(event, buildPurgeFilename(event)+"_ALL");
+	        			break;
+	        		default: 
+	        			if (Util.isInteger(cmd[1])) {
+	        				System.out.println("PURGING MESSAGES NUMBER");
+	        				purge(cmd[1], event);
+	        			} else if (intervalRegex.matcher(cmd[1]).matches()) {
+	        				System.out.println("PURGING TIME");
+	        				purgeTime(event, cmd[1]);
+	        			} else {
+	        				sendDM(event, "[Bot command was malformed.]");
+	        			}
+	        			break;
+	        	}
+	        }
+		}
+	}
+	
+	private void purge(String str, MessageReceivedEvent event) {
+		int num = Integer.parseInt(str);
+		if (num >= 1 && num <= 100) {
+			sendDM(event,"[Purging last "+str+" message(s) from #"+event.getChannel().getName()+"]");
+			purgeCount(num, event);
+		} else {
+			sendDM(event, "[Bot may only purge between 1 and 100 messages at a time.]");
+		}
+	}
+	
+	private void purgeCount(int num, MessageReceivedEvent event){
+		MessageHistory history = new MessageHistory(event.getChannel());
+		history.retrievePast(num).queue(success -> {
 			
-			MessageHistory history = new MessageHistory(event.getChannel());
-			history.retrievePast(100).queue(success -> {
-				List<Message> msgs = history.getRetrievedHistory();
-				System.out.println("MSGS COUNT: "+msgs.size());
-				try {
-					// Record purged data in a text file
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-					Date date = new Date(); //2017-01-30_12-08-43
-					String filename = "purge" + File.separator + event.getChannel().getId() + "_" + dateFormat.format(date) + "_" + event.getChannel().getName() + ".txt";
-					PrintWriter writer = new PrintWriter(filename, "UTF-8");
-					writer.println("PURGED MESSAGES:");
-					for (Message m : msgs) {
-						System.out.println(m.getContent());
-						writer.println(
-								m.getCreationTime() + " [MID: " + m.getId() + "] " + m.getAuthor().getName() 
-								+ " [UID: " + m.getAuthor().getId() +"]: " + m.getContent());
-					}
-					writer.close();
-				} catch (FileNotFoundException | UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+			// Record Messages
+			List<Message> msgs = history.getRetrievedHistory();
+			recordPurged(msgs, buildPurgeFilename(event));
+			
+			// Delete Messages
+			if (num > 1 && num <= 100) {
 				TextChannel channel = (TextChannel) event.getChannel();
 				channel.deleteMessages(msgs).queue();
-	        });
-			System.out.println("PURGED: #"+event.getChannel().getName());
+			} else if (num == 1) {
+				msgs.get(0).delete().queue();
+			} 
+        });
+	}
+	
+	private void purgeTime(MessageReceivedEvent event, String interval) {
+		int minutes = parseInterval(interval);
+		if (minutes > 0 || minutes < 20161) {
+			sendDM(event, "[Purging messages within "+interval+" interval from #"+event.getChannel().getName()+"]");
+			OffsetDateTime limit = event.getMessage().getCreationTime().minusMinutes(minutes);
+	        purgeDate(event, buildPurgeFilename(event)+"_TIME", limit);
+		} else {
+			sendDM(event, "[Purge interval was not valid. Interval must be written in the format `#d#h#m`. "
+					+"Maximum interval allowed is 2 weeks, specified as `14d`, `336h`, or `20160m`. Minimum "
+					+"interval is 1 minute, specified as `1m`.]");
 		}
+	}
+	
+	private void purgeDate(MessageReceivedEvent event, String filename, OffsetDateTime limit) {
+		MessageHistory history = new MessageHistory(event.getChannel());
+		history.retrievePast(5).queue(success -> {
+			
+			// Record Messages
+			List<Message> msgs = getMessagesAfterDate(history, limit);
+			recordPurged(msgs,filename);
+			
+			// Delete Messages
+			if (msgs.size() > 1) {
+				TextChannel channel = (TextChannel) event.getChannel();
+				channel.deleteMessages(msgs).queue(deleted -> {
+				purgeDate(event, filename, limit);
+			});
+			} else if (msgs.size() == 1) {
+				msgs.get(0).delete().queue();
+			}
+        });
+	}
+	
+	private void purgeAll(MessageReceivedEvent event, String filename) {
+		MessageHistory history = new MessageHistory(event.getChannel());
+		history.retrievePast(5).queue(success -> {
+			
+			// Record Messages
+			List<Message> msgs = history.getRetrievedHistory();
+			recordPurged(msgs,filename);
+			
+			// Delete Messages
+			if (msgs.size() > 1) {
+				TextChannel channel = (TextChannel) event.getChannel();
+				channel.deleteMessages(msgs).queue(deleted -> {
+				purgeAll(event, filename);
+			});
+			} else if (msgs.size() == 1) {
+				msgs.get(0).delete().queue();
+			}
+        });
+	}
+	
+	private void recordPurged(List<Message> msgs, String filename) {
+		try {
+			File f = new File(filename);
+			PrintWriter writer = null;
+			
+			if (f.exists() && !f.isDirectory()) {
+				writer = new PrintWriter(new FileOutputStream(new File(filename), true));
+				for (Message m : msgs) {
+					writer.println(buildMessageString(m));
+				}
+				writer.close();
+			} else {
+				writer = new PrintWriter(filename, "UTF-8");
+				for (Message m : msgs) {
+					writer.append(buildMessageString(m));
+				}
+				writer.close();
+			}
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private String buildMessageString(Message m) {
+		String date = m.getCreationTime().toString();
+		return date + " [MID: " + m.getId() + "] " + m.getAuthor().getName() 
+		+ " [UID: " + m.getAuthor().getId() +"]: " + m.getContent();
+	}
+	
+	private String buildPurgeFilename(MessageReceivedEvent event) {
+		String date = dateFormat.format(new Date()); //2017-01-30_12-08-43
+		return "purge" + File.separator + event.getChannel().getId() + "_" 
+				+ date + "_" + event.getChannel().getName() + ".txt";
+	}
+	
+	private int parseInterval(String str) {
+		// Interval "str" takes the form: #d#h#m
+		int days = 0;
+		int hours = 0;
+		int minutes = 0;
+		if (dayRegex.matcher(str).matches()) {
+			String[] split = str.split("d");
+			str = str.substring(str.indexOf("d")+1);
+			days = Integer.parseInt(split[0]);
+			System.out.println("Before d: "+split[0]);
+		}
+		if (hourRegex.matcher(str).matches()) {
+			String[] split = str.split("h");
+			str = str.substring(str.indexOf("h")+1);
+			hours = Integer.parseInt(split[0]);
+			System.out.println("Before h: "+split[0]);
+		}
+		if (minuteRegex.matcher(str).matches()) {
+			String[] split = str.split("m");
+			hours = Integer.parseInt(split[0]);
+			System.out.println("Before m: "+split[0]);
+		}
+		return days*1440 + hours*60 + minutes;
+	}
+	
+	private List<Message> getMessagesAfterDate(MessageHistory history, OffsetDateTime limit) {
+		List<Message> msgs = history.getRetrievedHistory();
+		List<Message> pruned = new LinkedList<Message>();
+		for (Message m : msgs) { 
+			if (m.getCreationTime().isAfter(limit)) {
+				pruned.add(m);
+			}
+		}
+		return pruned;
+	}
+	
+	private void sendDM(MessageReceivedEvent event, String message) {
+		event.getAuthor().getPrivateChannel().sendMessage(message).queue();
 	}
 }
