@@ -77,7 +77,7 @@ public class MagicBall extends Plugin{
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"question | add <answer | default>"};
+		return new String[] {"question | # | add | update | delete | import | export | count"};
 	}
 
 	@Override

@@ -40,17 +40,36 @@ public class Hello extends Plugin{
 
 	@Override
 	public String getDescription() {
-		return "The bot will say hello.";
+		return "Bot will say hello to the user that greeted it. "
+				+ "\n\nBot responses may be edited by authorized users with access to the following "
+				+ "command paramters:"
+				+ "\n`<response #>` - Reads response from `hellos` table with given #." 
+				+ "\n`add <response text>` - Adds response to the `hellos` table."
+				+ "\n`update <response #> <response text>` - Updates response text for the "
+				+ "response # in table."
+				+ "\n`delete <reponse #>` - Deletes response (by its #) from the `hellos` table."
+				+ "\n`import <textfile name and extension>` - Imports responses from textfile "
+				+ "into the `hellos` table."
+				+ "\n`export` - Exports responses from database to the `exports` folder."
+				+ "into textfile. NOT CURRENTLY FUNCTIONAL!"
+				+ "\n`count` - Reports how many unique hello responses are known.";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"hello"};
+		return new String[] {"hi",
+				"hi 13",
+				"hi add This is a new hello.",
+				"hi update 10 This is an updated hello.",
+				"hi delete 29",
+				"hi import imports/hellos.txt",
+				"hi export",
+				"hi count"};
 	}
 
 	@Override
 	public String[] getParameters() {
-		return null;
+		return  new String[] {"# | add | update | delete | import | export | count"};
 	}
 
 	@Override
