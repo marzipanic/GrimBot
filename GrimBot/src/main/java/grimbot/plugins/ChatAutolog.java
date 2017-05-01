@@ -21,7 +21,7 @@ public class ChatAutolog extends Plugin{
 
 	@Override
 	public String getUsage() {
-		return "Toggle persistent chat logging.";
+		return "NOT CURRENTLY CODED.";
 	}
 
 	@Override
