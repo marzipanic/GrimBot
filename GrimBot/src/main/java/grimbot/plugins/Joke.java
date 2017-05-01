@@ -34,22 +34,42 @@ public class Joke extends Plugin {
 
 	@Override
 	public String getUsage() {
-		return "Tells a dad joke.";
+		return "Tells a joke.";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Bot responds with a random joke. If provided a `<joke#>`, will tell the corresponding joke. If `<count>` is requested, will report number of jokes known.";
+		return "Bot responds with a random joke. If provided a `joke #`, will tell the corresponding joke."
+				+ " If `count` is requested, will report number of jokes known."
+				+ "\n\nBot responses may be edited by authorized users with with the following "
+				+ "command paramaters:"
+				+ "\n`<response #>` - Reads response from `jokes` table with given #." 
+				+ "\n`add <response text>` - Adds response to the `jokes` table."
+				+ "\n`update <response #> <response text>` - Updates response text for the "
+				+ "response # in table."
+				+ "\n`delete <reponse #>` - Deletes response (by its #) from the `jokes` table."
+				+ "\n`import <textfile name and extension>` - Imports responses from textfile "
+				+ "into the `jokes` table."
+				+ "\n`export` - Exports responses from database to the `exports` folder."
+				+ "into textfile. NOT CURRENTLY FUNCTIONAL!"
+				+ "\n`count` - Reports how many unique hello responses are known.";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"joke", "joke 42", "joke count", "joke import"};
+		return new String[] {"joke",
+				"joke 13",
+				"joke add This is a new joke.",
+				"joke update 10 This is an updated joke.",
+				"joke delete 29",
+				"joke import imports/jokes.txt",
+				"joke export",
+				"joke count"};
 	}
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"joke#"};
+		return new String[] {"# | add | update | delete | import | export | count"};
 	}
 
 	@Override
