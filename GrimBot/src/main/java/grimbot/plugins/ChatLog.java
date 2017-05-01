@@ -21,7 +21,7 @@ public class ChatLog extends Plugin{
 
 	@Override
 	public String getUsage() {
-		return "Logs chat channel.";
+		return "NOT CURRENTLY CODED.";
 	}
 
 	@Override
