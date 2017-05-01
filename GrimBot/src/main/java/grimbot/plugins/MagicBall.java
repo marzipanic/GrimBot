@@ -36,24 +36,48 @@ public class MagicBall extends Plugin{
 
 	@Override
 	public String getUsage() {
-		return "Consults a crystal ball";
+		return "Divines an answer.";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Bot responds to a yes or no question. Questions beginning with `who`, `what`, `when`, `where`, `why`, or `how` will not be answered. Failure to ask any question at all may result in an unusual response.";
+		
+		// TO DO: Update Export Help
+		return "Bot responds to a yes or no question. Questions beginning with `who`, `what`, "
+				+ "`when`, `where`, `why`, or `how` may recieve uncertain responses. Failure to ask any "
+				+ "question at all may result in an unusual response."
+				+ "\n\nBot responses may be edited by authorized users with access to the following "
+				+ "command paramters:"
+				+ "\n`<response #>` - Reads response from `answers` table with given #." 
+				+ "\n`add <table> <response text>` - Adds response to table."
+				+ "\n`update <table> <response #> <response text>` - Updates response text for the "
+				+ "response # in table."
+				+ "\n`delete <table> <reponse #>` - Deletes the response (by its #) from the table"
+				+ "\n`import <table> <textfile name and extension>` - Imports responses from textfile "
+				+ "into the table."
+				+ "\n`export <table>` - Exports responses from database to the `exports` folder."
+				+ "into textfile. NOT CURRENTLY FUNCTIONAL!"
+				+ "\n`count` - Reports how many unique responses are known in all tables."
+				+ "\n\nValid <table> parameters for the above commands include:"
+				+ "\n`answers` - Table contain answers to yes-or-no questions."
+				+ "\n`defaults` - Table contains answers to non yes-or-no questions. ";
 	}
 
 	@Override
 	public String[] getExamples() {
-		return new String[] {"ask Will it rain in Numbani tomorrow?",
-				"ask Does Mageroyal taste pleasant?",
-				"ask Is my starship going to survive its next encounter?"};
+		return new String[] {"ask Will it rain in Nagrand tomorrow?",
+				"ask 42",
+				"ask add answers This is an new answer response.",
+				"ask update defaults 10 This is an updated default response.",
+				"ask delete answers 29",
+				"ask import answers imports/answers.txt",
+				"ask export defaults",
+				"ask count"};
 	}
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"question|command"};
+		return new String[] {"question | add <answer | default>"};
 	}
 
 	@Override
@@ -83,6 +107,7 @@ public class MagicBall extends Plugin{
 	}
 	
 	private String handleCommand(String msg) {
+		// TO DO: Modify Imports, expand on Exports!
 		//!ask <msg>
 		String[] params = msg.split(" ");
 		String post = "";
@@ -144,6 +169,7 @@ public class MagicBall extends Plugin{
 				break;
 			default:
 				if (Util.isInteger(params[0])) {
+					// TO DO: Adjust to allow read for either table, answers or defaults
 					post = readResponse(answers, Integer.parseInt(params[0]));
 				} else {
 					post = readRandomResponse(answers);
