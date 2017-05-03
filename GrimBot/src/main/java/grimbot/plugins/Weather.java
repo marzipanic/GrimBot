@@ -48,7 +48,11 @@ public class Weather extends Plugin{
 
 	@Override
 	public String getDescription() {
-		return "Fetches weather data for a given zipcode or postal code. All data is provided by the Weather Underground service at: https://www.wunderground.com/";
+		return "Fetches weather data for a given zipcode or postal code. All data is provided by the Weather Underground "
+				+ "service at: https://www.wunderground.com/ and requires use of a valid API key to send queries."
+				+ "\n"
+				+ "To register a new API Key, add the key `wuapikey` to your bot's `config.json` file and next to it add"
+				+ "the API Key that you register for through Weather Underground at: https://www.wunderground.com/weather/api/";
 	}
 
 	@Override
@@ -63,19 +67,23 @@ public class Weather extends Plugin{
 
 	@Override
 	public void handleMessage(String msg, MessageReceivedEvent event) {
-		User author = event.getAuthor();
-		String[] params = msg.split(" ", 2);
-		if (params.length > 1) {
-			if (zipRegex.matcher(params[1]).matches()) {
-				if (!event.isFromType(ChannelType.PRIVATE)) {
-					event.getChannel().sendMessage(author.getAsMention() + " | Let's speak in private.").queue();
-				}
-				handleForecast(event, params[1]);
-			} else {
-				sendMessage(event, "[Zipcode or Postal Code used was not recognized within the US or Canada.]");
-			}
+		if (wuKey == "") {
+			sendMessage(event, "[No Weather Underground API Key was found; please add \"wuapikey\" to bot config.]");
 		} else {
-			sendMessage(event, "[Bot command was missing <zipcode | postal code> parameter. Type `"+Bot.prefix+"help weather` for more information.]");
+			User author = event.getAuthor();
+			String[] params = msg.split(" ", 2);
+			if (params.length > 1) {
+				if (zipRegex.matcher(params[1]).matches()) {
+					if (!event.isFromType(ChannelType.PRIVATE)) {
+						event.getChannel().sendMessage(author.getAsMention() + " | Let's speak in private.").queue();
+					}
+					handleForecast(event, params[1]);
+				} else {
+					sendMessage(event, "[Zipcode or Postal Code used was not recognized within the US or Canada.]");
+				}
+			} else {
+				sendMessage(event, "[Bot command was missing <zipcode | postal code> parameter. Type `"+Bot.prefix+"help weather` for more information.]");
+			}
 		}
 	}
 	
