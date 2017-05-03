@@ -60,7 +60,7 @@ public class About extends Plugin{
             eb.setDescription("__**Attributes**__ "
             		+ "\n**Name:** Grimelda"
             		+ "\n**Psuedonym:** \"GrimBot\""
-            		+ "\n**Description:** What she lacks in prehensile digits and limbs, Grimelda more than "
+            		+ "\n**Description:** What she lacks in corporeal presence, Grimelda more than "
             		+ "makes up for in wit and candor. Despite her circuits and programming, she claims she has"
             		+ " harnessed supernatural powers and mastered the art of divination."
             		+ "\n**Purpose:** To broker information from various services to Discord, offer improved"
