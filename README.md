@@ -6,6 +6,7 @@ A Java-based chat bot built for Discord that provides chat management functional
 
 # Status 
 [![GitHub version](https://badge.fury.io/gh/marzipanic%2FGrimBot.svg)](https://badge.fury.io/gh/marzipanic%2FGrimBot)
+[![Dependency Status](https://www.versioneye.com/user/projects/590a66d39e070f003f7cb1f2/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/590a66d39e070f003f7cb1f2)
 
 GrimBot uses Maven to fetch dependencies, which include:
 * [sqlite-jdbc](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) - A library for creating and maintaining an embedded SQLite database.
