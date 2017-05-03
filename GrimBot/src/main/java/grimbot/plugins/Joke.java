@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import grimbot.Util;
 import grimbot.Bot;
 import grimbot.Plugin;
+import grimbot.utilities.Util;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {

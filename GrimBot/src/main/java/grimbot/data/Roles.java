@@ -1,9 +1,7 @@
-package grimbot;
+package grimbot.data;
 
 // Permission Levels
 public class Roles {
-	
-	
 	
 	public enum Perm {
 		// Listed in order of least to most permissions

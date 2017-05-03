@@ -29,12 +29,6 @@ public final class Bot {
 		config = c;
 		database = d;
 		prefix = config.getSetting("prefix", "!");
-		/*builder = new JDABuilder(AccountType.BOT)
-				.setToken(config.getSetting("token", ""))
-				.setGame(Game.of(config.getSetting("game", "with Java."), 
-						config.getSetting("gamelink", "https://github.com/marzipanic/GrimBot")))
-	        	.setBulkDeleteSplittingEnabled(false)
-	        	.setAutoReconnect(true);*/
 	}
 	
 	public void Connect() {
@@ -46,7 +40,7 @@ public final class Bot {
 	        	.setAutoReconnect(true);
 		
 		loadPlugins();
-		ChatListener l = new ChatListener();
+		ChatListener l = new ChatListener(prefix, plugins);
 		builder.addListener(l);
 		connect();
 	}

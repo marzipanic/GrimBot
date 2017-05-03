@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import grimbot.Plugin;
-import grimbot.Util;
+import grimbot.utilities.Util;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.ChannelType;

@@ -3,7 +3,7 @@ package grimbot.plugins;
 import java.util.Random;
 
 import grimbot.Plugin;
-import grimbot.Util;
+import grimbot.utilities.Util;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Dice extends Plugin {
