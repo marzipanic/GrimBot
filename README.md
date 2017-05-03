@@ -1,22 +1,25 @@
 # GrimBot
+![GrimBot Banner](https://github.com/marzipanic/GrimBot/blob/master/GrimBotChannelBanner.png?raw=true)
 A Java-based chat bot built for Discord that provides chat management functionality, data storage, and (eventually) operate as an information broker for services such as:
 * [Google Drive API](https://developers.google.com/drive/)
-* [Battle.Net API](https://dev.battle.net/)
-* [Riot Games API](https://developer.riotgames.com/)
 * [Weather Underground API](https://www.wunderground.com/weather/api/)
 
-GrimBot is written in Java and utilizes Maven to fetch dependencies, which include:
+# Status 
+[![GitHub version](https://badge.fury.io/gh/marzipanic%2FGrimBot.svg)](https://badge.fury.io/gh/marzipanic%2FGrimBot)
+
+GrimBot uses Maven to fetch dependencies, which include:
 * [sqlite-jdbc](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) - A library for creating and maintaining an embedded SQLite database.
 * [JDA](https://github.com/DV8FromTheWorld/JDA) - An API wrapper for Discord.
 * [Google OAuth Client](https://developers.google.com/api-client-library/java/google-oauth-java-client/) - A library to handle OAuth connections to Google accounts.
+* [OKHttp](http://square.github.io/okhttp/) - API to handle http requests.
 
 # Current Features
-GrimBot is being built with developers in mind. Some of its features currently include:
+GrimBot is being built with Server Administrators and Plugin Developers in mind. Some of its features currently include:
 * **Regex Identification:** All plugins must specify a unique Regex pattern that will help the bot's `ChatListener.java` class match the appropriate plugin to the appropriate chat command. Test your regex at [RegexPlanet](http://www.regexplanet.com/advanced/java/index.html).
 * **Reflection:** Plugins written for this bot by others may be dropped into the `plugins` folder, no need to recompile the code! Simply restarting the bot will load them up.
 * **Robust Help Functions:** The abstract `Plugin.java` class helps plugin writers to easily include information about the plugin into the bot's normal help commands.
 * **SQLite Database:** Plugin authors can connect to the SQLite Database built into this bot in order to add persistent storage to their plugin.
-* **Complimentary Plugins:** To help you get started, several example modules, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included. Note: the `ChatPurge.java` module provides the ability to delete the last 100 messages in chat, up to 2 weeks past (specific cap on Discord Bots); *permissions are not yet handled, so any user can run this command!*
+* **Complimentary Plugins:** To help you get started, several example plugins, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included. Note: the `ChatPurge.java` module provides the ability to delete the last 100 messages in chat, up to 2 weeks past (specific cap on Discord Bots); *permissions are not yet handled, so any user can run this command!*
 
 # Setup
 To run GrimBot, you first need to acquire API keys for the services listed above. To register for those API keys, create an account with each of the services linked below, login, then create a new API key for each.
@@ -40,12 +43,11 @@ Many of GrimBot's challenges likely occur due to its author's newness at writing
 
 # Project To-Do List
 Goals for GrimBot are constantly evolving, but immediately include:
-* Refactor modules using textfile storage (MagicBall, Hello, ChatPurge) to use new SQLite database
-* Refactor textfile import methods to handle easy, human-readable text files
-* Flesh out refactored modules to support all CRUD functions
-* Refactor ChatPurge module to wait() and respect 2 week message-limit on Bot fetches in Discord
-* Build skeleton into ChatPurge to handle full-channel purging (future API feature for Discord)
-* Code forward logging module
+* Develop Permissions handling into GrimBot, keeping it simple for Plugin authors.
+* Extract `Help` functions from the ChatListener class
+* Build plugin embeds for help at bot start up, rather than just the help text
+* Begin work on integration of [Battle.Net API](https://dev.battle.net/)
+* Begin work on integration of [Riot Games API](https://developer.riotgames.com/)
 
 # Project Notes
 GrimBot was started mid-February 2017 as a personal project, but has evolved into a more serious undertaking since then. The following is a record of progress prior to GitHub upload:
