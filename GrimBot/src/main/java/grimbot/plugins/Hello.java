@@ -19,8 +19,8 @@ public class Hello extends Plugin{
 
 	public Hello() {
 		super("^(hello|hi|hola)($|\\s+|\\s.+)?");
-		conn = Bot.db.conn;
-		hellos = Bot.db.initializeTable("hellos","id int primary key not null, response text not null");
+		conn = Bot.database.conn;
+		hellos = Bot.database.initializeTable("hellos","id int primary key not null, response text not null");
 	}
 
 	@Override

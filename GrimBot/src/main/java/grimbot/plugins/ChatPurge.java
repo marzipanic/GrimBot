@@ -77,7 +77,7 @@ public class ChatPurge extends Plugin{
 		} else {
 	    	String[] cmd = msg.split(" ");
 	        if (cmd.length == 1) {
-	        	purge("100", event);
+	        	purgeCount("100", event);
 	        }
 	        else {
 	        	switch (cmd[1]) {
@@ -88,10 +88,10 @@ public class ChatPurge extends Plugin{
 	        		default: 
 	        			if (Util.isInteger(cmd[1])) {
 	        				System.out.println("PURGING MESSAGES NUMBER");
-	        				purge(cmd[1], event);
+	        				purgeCount(cmd[1], event);
 	        			} else if (intervalRegex.matcher(cmd[1]).matches()) {
 	        				System.out.println("PURGING TIME");
-	        				purgeTime(event, cmd[1]);
+	        				purgeInterval(event, cmd[1]);
 	        			} else {
 	        				sendDM(event, "[Bot command was malformed.]");
 	        			}
@@ -101,40 +101,43 @@ public class ChatPurge extends Plugin{
 		}
 	}
 	
-	private void purge(String str, MessageReceivedEvent event) {
+	
+	private void purge(int num, MessageReceivedEvent event){
+		MessageHistory history = new MessageHistory(event.getChannel());
+		history.retrievePast(num).queue(success -> {
+			List<Message> msgs = getMessagesAfterDate(history, event.getMessage().getCreationTime().minusMinutes(20160));
+			
+			// Delete Messages
+			if (!msgs.isEmpty()) {
+				recordPurged(msgs, buildPurgeFilename(event));
+				if (msgs.size() > 1) {
+					TextChannel channel = (TextChannel) event.getChannel();
+					channel.deleteMessages(msgs).queue();
+				} else if (msgs.size() == 1) {
+					msgs.get(0).delete().queue();
+				} 
+			} else {
+				sendDM(event, "[No messages could be deleted at this time.]");
+			}
+        });
+	}
+	
+	private void purgeCount(String str, MessageReceivedEvent event) {
 		int num = Integer.parseInt(str);
 		if (num >= 1 && num <= 100) {
 			sendDM(event,"[Purging last "+str+" message(s) from #"+event.getChannel().getName()+"]");
-			purgeCount(num, event);
+			purge(num, event);
 		} else {
 			sendDM(event, "[Bot may only purge between 1 and 100 messages at a time.]");
 		}
 	}
 	
-	private void purgeCount(int num, MessageReceivedEvent event){
-		MessageHistory history = new MessageHistory(event.getChannel());
-		history.retrievePast(num).queue(success -> {
-			
-			// Record Messages
-			List<Message> msgs = history.getRetrievedHistory();
-			recordPurged(msgs, buildPurgeFilename(event));
-			
-			// Delete Messages
-			if (num > 1 && num <= 100) {
-				TextChannel channel = (TextChannel) event.getChannel();
-				channel.deleteMessages(msgs).queue();
-			} else if (num == 1) {
-				msgs.get(0).delete().queue();
-			} 
-        });
-	}
-	
-	private void purgeTime(MessageReceivedEvent event, String interval) {
+	private void purgeInterval(MessageReceivedEvent event, String interval) {
 		int minutes = parseInterval(interval);
 		if (minutes > 0 || minutes < 20161) {
 			sendDM(event, "[Purging messages within "+interval+" interval from #"+event.getChannel().getName()+"]");
 			OffsetDateTime limit = event.getMessage().getCreationTime().minusMinutes(minutes);
-	        purgeDate(event, buildPurgeFilename(event)+"_TIME", limit);
+	        purgeDate(event, buildPurgeFilename(event), limit);
 		} else {
 			sendDM(event, "[Purge interval was not valid. Interval must be written in the format `#d#h#m`. "
 					+"Maximum interval allowed is 2 weeks, specified as `14d`, `336h`, or `20160m`. Minimum "
@@ -144,9 +147,7 @@ public class ChatPurge extends Plugin{
 	
 	private void purgeDate(MessageReceivedEvent event, String filename, OffsetDateTime limit) {
 		MessageHistory history = new MessageHistory(event.getChannel());
-		history.retrievePast(5).queue(success -> {
-			
-			// Record Messages
+		history.retrievePast(100).queue(success -> {
 			List<Message> msgs = getMessagesAfterDate(history, limit);
 			recordPurged(msgs,filename);
 			
@@ -167,7 +168,7 @@ public class ChatPurge extends Plugin{
 		history.retrievePast(5).queue(success -> {
 			
 			// Record Messages
-			List<Message> msgs = history.getRetrievedHistory();
+			List<Message> msgs = getMessagesAfterDate(history, event.getMessage().getCreationTime().minusMinutes(20160));
 			recordPurged(msgs,filename);
 			
 			// Delete Messages
@@ -190,13 +191,13 @@ public class ChatPurge extends Plugin{
 			if (f.exists() && !f.isDirectory()) {
 				writer = new PrintWriter(new FileOutputStream(new File(filename), true));
 				for (Message m : msgs) {
-					writer.println(buildMessageString(m));
+					writer.append(buildMessageString(m)+"\r\n");
 				}
 				writer.close();
 			} else {
 				writer = new PrintWriter(filename, "UTF-8");
 				for (Message m : msgs) {
-					writer.append(buildMessageString(m));
+					writer.println(buildMessageString(m));
 				}
 				writer.close();
 			}

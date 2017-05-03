@@ -18,8 +18,8 @@ public class Joke extends Plugin {
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
-		conn = Bot.db.conn;
-		jokes = Bot.db.initializeTable("wow","id int primary key not null, joke text not null");
+		conn = Bot.database.conn;
+		jokes = Bot.database.initializeTable("wow","id int primary key not null, joke text not null");
 	}
 
 	@Override

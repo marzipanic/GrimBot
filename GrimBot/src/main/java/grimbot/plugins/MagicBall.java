@@ -19,9 +19,9 @@ public class MagicBall extends Plugin{
 
 	public MagicBall() {
 		super("^(8ball|ask|crystalball|magicball)($|\\s+|\\s.+)?");
-		conn = Bot.db.conn;
-		defaults = Bot.db.initializeTable("defaults","id int primary key not null, response text not null");
-		answers = Bot.db.initializeTable("answers","id int primary key not null, response text not null");
+		conn = Bot.database.conn;
+		defaults = Bot.database.initializeTable("defaults","id int primary key not null, response text not null");
+		answers = Bot.database.initializeTable("answers","id int primary key not null, response text not null");
 	}
 
 	@Override

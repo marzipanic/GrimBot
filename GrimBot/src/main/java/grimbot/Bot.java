@@ -16,26 +16,35 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public final class Bot {
 	
+	public static Config config = null;
+	public static SQLiteJDBC database = null;
 	public static String prefix = "";
 	private static JDABuilder builder;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
 	public static final String pluginPath = System.getProperty("user.dir") 
 			+ File.separator + "target" + File.separator + "classes" 
 			+ File.separator + "grimbot" + File.separator + "plugins";
-	public static SQLiteJDBC db = null;
 	
-	public Bot(Config config, SQLiteJDBC database) {
-		db = database;
+	public Bot(Config c, SQLiteJDBC d) {
+		config = c;
+		database = d;
 		prefix = config.getSetting("prefix", "!");
+		/*builder = new JDABuilder(AccountType.BOT)
+				.setToken(config.getSetting("token", ""))
+				.setGame(Game.of(config.getSetting("game", "with Java."), 
+						config.getSetting("gamelink", "https://github.com/marzipanic/GrimBot")))
+	        	.setBulkDeleteSplittingEnabled(false)
+	        	.setAutoReconnect(true);*/
+	}
+	
+	public void Connect() {
 		builder = new JDABuilder(AccountType.BOT)
 				.setToken(config.getSetting("token", ""))
 				.setGame(Game.of(config.getSetting("game", "with Java."), 
 						config.getSetting("gamelink", "https://github.com/marzipanic/GrimBot")))
 	        	.setBulkDeleteSplittingEnabled(false)
 	        	.setAutoReconnect(true);
-	}
-	
-	public void Connect() {
+		
 		loadPlugins();
 		ChatListener l = new ChatListener();
 		builder.addListener(l);

@@ -7,12 +7,9 @@ public abstract class Plugin {
 	
 	public Pattern pattern;
 	
-	public Plugin (String p) {
-		pattern = Pattern.compile(p);
+	public Plugin (String regex) {
+		pattern = Pattern.compile(regex);
 	}
-
-	// Config File (if Needed)
-	//public abstract JSONObject getConfig();
 	
 	// Return the plugin name
 	public abstract String getPrimaryAlias();

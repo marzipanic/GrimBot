@@ -125,8 +125,9 @@ public class ChatListener extends ListenerAdapter {
 			if (params != null) {
 				for (int i=0; i<params.length; i++) pluginText += " <" + params[i] + ">";
 			}
-			pluginText += "`\n**Aliases:**";
+			pluginText += "`";
 			if (aliases != null) {
+				pluginText += "\n**Aliases:**";
 				for (int i=0; i<aliases.length; i++) pluginText += " `" + Bot.prefix + aliases[i] + "`";
 			}
 			if (desc != null) {
