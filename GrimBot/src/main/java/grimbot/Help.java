@@ -1,10 +1,8 @@
-package grimbot.utilities;
+package grimbot;
 
 import java.util.HashMap;
 import java.util.List;
 
-import grimbot.Bot;
-import grimbot.Plugin;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;

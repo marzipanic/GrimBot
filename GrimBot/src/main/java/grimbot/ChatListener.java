@@ -1,7 +1,5 @@
 package grimbot;
 
-import grimbot.utilities.Help;
-
 import java.util.List;
 import java.util.regex.Pattern;
 
