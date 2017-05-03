@@ -58,12 +58,11 @@ public class About extends Plugin{
             eb.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
             eb.setFooter("Bot built by Marzipanic#4639", event.getJDA().getUserById("140901708493619200").getEffectiveAvatarUrl());
             eb.setDescription("__**Attributes**__ "
-            		+ "\n**Name:** Atticus P. Grimthorpe"
+            		+ "\n**Name:** Grimelda"
             		+ "\n**Psuedonym:** \"GrimBot\""
-            		+ "\n**Description:** As a floating, supernatural skull, what Grim lacks in corporeal "
-            		+ "limbs he makes up for in wit and candor. A large, sanguine-hued garnet sits tightly "
-            		+ "wedged in his left eye-socket; he claims it gives him divining power. Black runes "
-            		+ "etch his bones."
+            		+ "\n**Description:** What she lacks in prehensile digits and limbs, Grimelda more than "
+            		+ "makes up for in wit and candor. Despite her rigorous programming, she claims she has"
+            		+ "harnessed the secrets of divination and the supernatural."
             		+ "\n**Purpose:** To broker information from various services to Discord, offer improved"
             		+ " chat maintenance features, and provide other fun tools for gamers."
             		+ "\n**Website:** https://github.com/marzipanic/GrimBot"
