@@ -26,6 +26,7 @@ import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
@@ -55,12 +56,12 @@ public class ChatLogger extends ListenerAdapter {
 	
 	private void InitializeLogBackups() {
 		System.out.println("Backups handled...");
-		ex.schedule(new Runnable() {
+		ex.scheduleAtFixedRate(new Runnable() {
 		    public void run() {
 		        System.out.println("Asynchronous Backup...");
 		        backupLogs();
 		    }
-	    }, 15, TimeUnit.SECONDS);
+	    }, 1, 24, TimeUnit.HOURS);
 	}
 	
 	public void onMessageReceived(final MessageReceivedEvent event) {
@@ -68,23 +69,16 @@ public class ChatLogger extends ListenerAdapter {
 		if (event.isFromType(ChannelType.TEXT)) {
 			String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 			String log = buildMessageString(event.getMessage());
-			if (!logs.containsKey(name)) {
-				logs.put(name, createLog(name));
-			} 
-			writeLog(logs.get(name),log);
+			writeLog(name, log);
 		}
 	}
 	
 	public void onMessageUpdate(final MessageUpdateEvent event) {
 		System.out.println("MESSAGE UPDATED!");
 		if (event.isFromType(ChannelType.TEXT)) {
-			String logID = event.getChannel().getId();
+			String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 			String log = buildMessageUpdateString(event.getMessage());
-			System.out.println("MESSAGE UPDATE: "+ log);
-			if (!logs.containsKey(logID)) {
-				logs.put(logID, createLog(logID+"_"+event.getChannel().getName()));
-			} 
-			writeLog(logs.get(logID),log);
+			writeLog(name, log);
 		}
 	}
 	
@@ -105,49 +99,47 @@ public class ChatLogger extends ListenerAdapter {
 	
 	public void onReactionReceived(final MessageReactionAddEvent event) {
 		System.out.println("REACTION RECEIVED!");
-		String logID = event.getChannel().getId();
+		String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 		String log = buildReactionString(event);
-		System.out.println("REACTION: "+ log);
-		if (!logs.containsKey(logID)) {
-			logs.put(logID, createLog(logID+"_"+event.getChannel().getName()));
-		} 
-		writeLog(logs.get(logID),log);
+		writeLog(name, log);
 	}
 	
 	public void onReactionRemoved(final MessageReactionRemoveEvent event) {
 		System.out.println("REACTION REMOVED!");
-		String logID = event.getChannel().getId();
+		String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 		String log = buildReactionDeleteString(event);
-		System.out.println("REACTION DELETE: "+ log);
-		if (!logs.containsKey(logID)) {
-			logs.put(logID, createLog(logID+"_"+event.getChannel().getName()));
-		} 
-		writeLog(logs.get(logID),log);
+		writeLog(name, log);
 	}
 	
 	private void backupLogs() {
 		System.out.println("BACKING UP!");
+		HashMap<String, PrintWriter> newLogs = new HashMap<String, PrintWriter>();
 		for (String name : logs.keySet()) {
+			System.out.println("Backup: "+name);
 			PrintWriter writer = logs.get(name);
 			writer.close();
-			logs.put(name, createLog(name));
+			newLogs.put(name, createLog(name));
 		}
-		logs.clear();
+		logs = newLogs;
 	}
 	
-	private void writeLog(PrintWriter writer, String log) {
+	private void writeLog(String name, String log) {
+		if (!logs.containsKey(name)) {
+			logs.put(name, createLog(name));
+		} 
+		PrintWriter writer = logs.get(name);
 		writer.append(log + "\r\n");
 		writer.flush();
 	}
 	
-	private PrintWriter createLog(String logName) {
-		System.out.println("CREATE LOG: "+logName);
-		String filename = path+logName+".txt";
+	private PrintWriter createLog(String name) {
+		System.out.println("CREATE LOG: "+name);
+		OffsetDateTime now = OffsetDateTime.now();
+		String filename = path+name+"_"+now.format(df)+".txt";
 		try {
 			File f = new File(filename);
 			if (f.exists() && !f.isDirectory()) {
-				OffsetDateTime now = OffsetDateTime.now();
-				filename = path+logName+"_"+now.format(df)+".txt";
+				filename = path+name+"_"+now.format(df)+"_duplicate.txt";
 			}
 			return new PrintWriter(filename, "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
