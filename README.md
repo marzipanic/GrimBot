@@ -34,9 +34,9 @@ Next, download or clone this repository, then update `config.json.example` file 
 Once you've updated these values, save the file and remember not to share your API keys with anyone! As a heads up, you may also wish to register for and add keys to your config in order to use the following plugins:
 
 | Plugin | Description | API URL | config key |
-| --- | --- |
-| APOD.java | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | "nasaapikey" |
-| Weather.java | Fetch forecasts from Weather Underground | [CLICK](https://www.wunderground.com/weather/api/) | "wuapikey" |
+| --- | --- | --- | --- |
+| `APOD.java` | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | "nasaapikey" |
+| `Weather.java` | Fetch forecasts from Weather Underground | [CLICK](https://www.wunderground.com/weather/api/) | "wuapikey" |
 
 # Running the Program
 Currently, GrimBot is in development stages, so a runnable jar file has not been provided. However, you can download this bot project, drop it into your Eclipse Neon.2 IDE workspace (or the workspace for another Java IDE), and open it there. You can run the bot directly via the IDE, or export a runnable jar file after configuring it as listed above.
