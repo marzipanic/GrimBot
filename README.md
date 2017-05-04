@@ -51,9 +51,8 @@ Many of GrimBot's challenges likely occur due to its author's newness at writing
 
 # Project To-Do List
 Goals for GrimBot are constantly evolving, but immediately include:
-* Develop Permissions handling into GrimBot, keeping it simple for Plugin authors.
-* Extract `Help` functions from the ChatListener class
-* Build plugin embeds for help at bot start up, rather than just the help text
+* Develop Permissions handling into GrimBot, keeping it simple for Plugin authors
+* Integrate cloud backup of logs into Google Drive
 * Begin work on integration of [Battle.Net API](https://dev.battle.net/)
 * Begin work on integration of [Riot Games API](https://developer.riotgames.com/)
 
