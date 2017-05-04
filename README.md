@@ -25,13 +25,13 @@ GrimBot is being built with Server Administrators and Plugin Developers in mind.
 # Setup
 To run GrimBot, you first need to create a Discord Bot User and acquire a "token" for it. Follow [this tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to complete the process.
 
-Next, download or clone this repository, then update `config.json.example` file located in the config folder by removing the ".example" extension. You will then need to open the file and replace each of the items listed below with appropriate values:
+Next, download or clone this repository, then update `config.json.example` file located in the config folder by removing the `.example` extension. You will then need to open the file and replace each of the items listed below with appropriate values:
 * **token:** This field should contain your Discord Bot API Key, which you received when you registered at the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me) when you setup your Bot User above.
 * **prefix:**  Choose a command prefix, such as `!`; this is useful for avoiding collisions with other bots.
 * **game:** An optional field that will set the "playing [...]" status message on the bot.
 * **permissions:** An integer representing the standard permission set that should be given to your bot. To generate this integer, use the [Discord Permissions Calculator](https://discordapi.com/permissions.html).
 
-Once you've updated these values, save the file and remember not to share your API keys with anyone! As a heads up, you may also wish to register for and add keys to your config in order to use the following plugins:
+Once you've updated these values, save the file and remember not to share your API keys with anyone! As a heads up, you may also wish to register for and add keys to your `config.json` file (using the "config key" name listed below) in order to use the following plugins:
 
 | Plugin | Description | API URL | config key |
 | --- | --- | --- | --- |
