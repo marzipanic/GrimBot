@@ -73,10 +73,7 @@ public class APOD extends Plugin{
 	private Message buildEmbed(JSONObject apod) {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(java.awt.Color.BLACK);
-		eb.addField("Title", apod.getString("title"), false);
-		eb.addField("Explanation", apod.getString("explanation"), false);
-		eb.addField("Date", apod.getString("date"), true);
-		eb.addField("Copyright", apod.getString("copyright"), true);
+		eb.addField("APOD: "+apod.getString("title"), apod.getString("explanation"), false);
         eb.addField("HD Image", apod.getString("hdurl"), false);
         eb.setImage(apod.getString("url"));
         eb.setFooter("Data from NASA", "https://api.nasa.gov/images/logo.png");
