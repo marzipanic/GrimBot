@@ -9,10 +9,10 @@ A Java-based chat bot built for Discord that provides chat management functional
 [![Dependency Status](https://www.versioneye.com/user/projects/590a66d39e070f003f7cb1f2/badge.svg?style=flat)](https://www.versioneye.com/user/projects/590a66d39e070f003f7cb1f2)
 
 GrimBot uses Maven to fetch dependencies, which include:
-* [sqlite-jdbc](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) - A library for creating and maintaining an embedded SQLite database.
-* [JDA](https://github.com/DV8FromTheWorld/JDA) - An API wrapper for Discord.
-* [Google OAuth Client](https://developers.google.com/api-client-library/java/google-oauth-java-client/) - A library to handle OAuth connections to Google accounts.
-* [OKHttp](http://square.github.io/okhttp/) - API to handle http requests.
+* [sqlite-jdbc](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) - Library to create and maintain an embedded SQLite database.
+* [JDA](https://github.com/DV8FromTheWorld/JDA) - A Java API wrapper for Discord.
+* [Google OAuth Client](https://developers.google.com/api-client-library/java/google-oauth-java-client/) - Library to handle OAuth connections to Google accounts.
+* [OKHttp](http://square.github.io/okhttp/) - Library to handle HTTP requests.
 
 # Current Features
 GrimBot is being built with Server Administrators and Plugin Developers in mind. Some of its features currently include:
@@ -23,18 +23,25 @@ GrimBot is being built with Server Administrators and Plugin Developers in mind.
 * **Complimentary Plugins:** To help you get started, several example plugins, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included. Note: the `ChatPurge.java` module provides the ability to delete the last 100 messages in chat, up to 2 weeks past (specific cap on Discord Bots); *permissions are not yet handled, so any user can run this command!*
 
 # Setup
-To run GrimBot, you first need to acquire API keys for the services listed above. To register for those API keys, create an account with each of the services linked below, login, then create a new API key for each.
+To run GrimBot, you first need to create a Discord Bot User and acquire a "token" for it. Follow [this tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to complete the process.
 
-Once you've downloaded this repo, update `config.json.example` file located in the config folder by removing the ".example" extension. You will then need to open the file and replace each of the items listed below with appropriate values:
-* **token:** This field should contain your Discord Bot API Key, which you can register for via the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me).
-* **prefix:**  Choose a command prefix, such as `!`; useful for avoiding collisions with other bots.
+Next, download or clone this repository, then update `config.json.example` file located in the config folder by removing the ".example" extension. You will then need to open the file and replace each of the items listed below with appropriate values:
+* **token:** This field should contain your Discord Bot API Key, which you received when you registered at the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me) when you setup your Bot User above.
+* **prefix:**  Choose a command prefix, such as `!`; this is useful for avoiding collisions with other bots.
 * **game:** An optional field that will set the "playing [...]" status message on the bot.
 * **permissions:** An integer representing the standard permission set that should be given to your bot. To generate this integer, use the [Discord Permissions Calculator](https://discordapi.com/permissions.html).
 
-Once you've updated these values, save the file and remember not to share your API keys with anyone!
+Once you've updated these values, save the file and remember not to share your API keys with anyone! As a heads up, you may also wish to register for and add keys to your config in order to use the following plugins:
+
+| Plugin | Description | API URL | config key |
+| --- | --- |
+| APOD.java | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | "nasaapikey" |
+| Weather.java | Fetch forecasts from Weather Underground | [CLICK](https://www.wunderground.com/weather/api/) | "wuapikey" |
 
 # Running the Program
 Currently, GrimBot is in development stages, so a runnable jar file has not been provided. However, you can download this bot project, drop it into your Eclipse Neon.2 IDE workspace (or the workspace for another Java IDE), and open it there. You can run the bot directly via the IDE, or export a runnable jar file after configuring it as listed above.
+
+To get GrimBot onto your server, you'll need to return to the [Discord Developer Site](https://discordapp.com/login?redirect_to=/developers/applications/me) where you must create a new Bot User.
 
 # Project Challenges
 Many of GrimBot's challenges likely occur due to its author's newness at writing chat bots. So far, known challenges include:
