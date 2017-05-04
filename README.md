@@ -20,7 +20,21 @@ GrimBot is being built with Server Administrators and Plugin Developers in mind.
 * **Reflection:** Plugins written for this bot by others may be dropped into the `plugins` folder, no need to recompile the code! Simply restarting the bot will load them up.
 * **Robust Help Functions:** The abstract `Plugin.java` class helps plugin writers to easily include information about the plugin into the bot's normal help commands.
 * **SQLite Database:** Plugin authors can connect to the SQLite Database built into this bot in order to add persistent storage to their plugin.
-* **Complimentary Plugins:** To help you get started, several example plugins, such as `Hello.java`, `Dice.java`, and `Joke.java` have been included. Note: the `ChatPurge.java` module provides the ability to delete the last 100 messages in chat, up to 2 weeks past (specific cap on Discord Bots); *permissions are not yet handled, so any user can run this command!*
+* **Complimentary Plugins:** To help you get started, several example plugins which include:
+
+| Plugin | Description | API KEY | CRUD |
+| --- | --- | --- | --- | --- |
+| `About.java` | Returns information about the bot. | x | NO |
+| `APOD.java` | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | NO |
+| `ChatPurge.java` | Handles bulk deletion of messages. | x | NO |
+| `Coin.java` | Handles bulk deletion of messages. | x | NO |
+| `Dice.java` | Handles bulk deletion of messages. | x | NO |
+| `Hello.java` | Handles bulk deletion of messages. | x | YES |
+| `Joke.java` | Tells jokes. | x | YES |
+| `MagicBall.java` | Answers yes-or-no questions. | x | YES |
+| `Weather.java` | Fetch forecasts from Weather Underground. | [CLICK](https://www.wunderground.com/weather/api/) | NO |
+| `XKCD.java` | Fetch xkcd comics. | x | NO |
+
 
 # Setup
 To run GrimBot, you first need to create a Discord Bot User and acquire a "token" for it. Follow [this tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to complete the process.
