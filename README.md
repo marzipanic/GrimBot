@@ -27,9 +27,9 @@ GrimBot is being built with Server Administrators and Plugin Developers in mind.
 | `About.java` | Returns information about the bot. | x | NO |
 | `APOD.java` | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | NO |
 | `ChatPurge.java` | Handles bulk deletion of messages. | x | NO |
-| `Coin.java` | Handles bulk deletion of messages. | x | NO |
-| `Dice.java` | Handles bulk deletion of messages. | x | NO |
-| `Hello.java` | Handles bulk deletion of messages. | x | YES |
+| `Coin.java` | Flips a coin, heads or tails. | x | NO |
+| `Dice.java` | Rolls up to 20 dice with up to 1000000 faces. | x | NO |
+| `Hello.java` | Says hello. | x | YES |
 | `Joke.java` | Tells jokes. | x | YES |
 | `MagicBall.java` | Answers yes-or-no questions. | x | YES |
 | `Weather.java` | Fetch forecasts from Weather Underground. | [CLICK](https://www.wunderground.com/weather/api/) | NO |
