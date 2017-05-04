@@ -19,7 +19,7 @@ public final class Bot {
 	public static Config config = null;
 	public static SQLiteJDBC database = null;
 	public static String prefix = "";
-	private static JDABuilder builder;
+	public static JDABuilder jda;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
 	public static final String pluginPath = System.getProperty("user.dir") 
 			+ File.separator + "target" + File.separator + "classes" 
@@ -32,7 +32,7 @@ public final class Bot {
 	}
 	
 	public void Connect() {
-		builder = new JDABuilder(AccountType.BOT)
+		jda = new JDABuilder(AccountType.BOT)
 				.setToken(config.getSetting("token", ""))
 				.setGame(Game.of(config.getSetting("game", "with Java."), 
 						config.getSetting("gamelink", "https://github.com/marzipanic/GrimBot")))
@@ -40,9 +40,10 @@ public final class Bot {
 	        	.setAutoReconnect(true);
 		
 		loadPlugins();
-		ChatListener l = new ChatListener(prefix, plugins);
-		builder.addListener(l);
-		connect();
+		ChatListener listener = new ChatListener(prefix, plugins);
+		ChatLogger logger = new ChatLogger(config.getSetting("gdriveapikey", null));
+		jda.addListener(listener).addListener(logger);
+		connectBot();
 	}
 	
 	private static void loadPlugins() {
@@ -86,9 +87,9 @@ public final class Bot {
 		}
 	}
 	
-	private static void connect() {
+	private static void connectBot() {
 		try {
-			builder.buildAsync();
+			jda.buildAsync();
 		} catch (LoginException e) {
 			System.out.println("\nERROR: Login failed.");
 			e.printStackTrace();

@@ -23,11 +23,11 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ChatPurge extends Plugin{
 	
-	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-	private static Pattern intervalRegex = Pattern.compile("^(([0-9]|1[0-4])d)?(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h)?(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m)?");
-	private static Pattern dayRegex = Pattern.compile("(([0-9]|1[0-4])d){1}");
-	private static Pattern hourRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h){1}");
-	private static Pattern minuteRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m){1}");
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+	private static final Pattern intervalRegex = Pattern.compile("^(([0-9]|1[0-4])d)?(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h)?(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m)?");
+	private static final Pattern dayRegex = Pattern.compile("(([0-9]|1[0-4])d){1}");
+	private static final Pattern hourRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-2][0-9]|33[0-6])h){1}");
+	private static final Pattern minuteRegex = Pattern.compile("(([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|20[0-1][0-5][0-9]|12060)m){1}");
 	
 	public ChatPurge() {
 		super("^purge($|\\s+|\\s.+)?");
