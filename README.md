@@ -23,7 +23,7 @@ GrimBot is being built with Server Administrators and Plugin Developers in mind.
 * **Complimentary Plugins:** To help you get started, several example plugins which include:
 
 | Plugin | Description | API KEY | CRUD |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | `About.java` | Returns information about the bot. | x | NO |
 | `APOD.java` | Fetch NASA's Astronomy Picture of the Day | [CLICK](https://api.nasa.gov/) | NO |
 | `ChatPurge.java` | Handles bulk deletion of messages. | x | NO |
