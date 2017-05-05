@@ -82,29 +82,24 @@ public class ChatLogger extends ListenerAdapter {
 		}
 	}
 	
-	/* INACTIVE
-	public void onMessageDeleteEvent(final MessageDeleteEvent event) {
+	public void onMessageDelete(final MessageDeleteEvent event) {
 	 
 		System.out.println("MESSAGE DELETED!");
 		if (event.isFromType(ChannelType.TEXT)) {
-			String logName = event.getChannel().getId()+"_"+event.getChannel().getName();
+			String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 			String log = buildMessageDeleteString(event);
-			System.out.println("MESSAGE DELETE: "+ log);
-			if (logs.containsKey(logName)) {
-				log += "\n"+logs.get(logName);
-			}
-			logs.put(logName, log);
+			writeLog(name, log);
 		}
-	}*/
+	}
 	
-	public void onReactionReceived(final MessageReactionAddEvent event) {
+	public void onMessageReactionAdd(final MessageReactionAddEvent event) {
 		System.out.println("REACTION RECEIVED!");
 		String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 		String log = buildReactionString(event);
 		writeLog(name, log);
 	}
 	
-	public void onReactionRemoved(final MessageReactionRemoveEvent event) {
+	public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
 		System.out.println("REACTION REMOVED!");
 		String name = event.getChannel().getId()+"_"+event.getChannel().getName();
 		String log = buildReactionDeleteString(event);
