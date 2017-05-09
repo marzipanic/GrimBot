@@ -1,20 +1,31 @@
 package grimbot.plugins;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import grimbot.Bot;
 import grimbot.Plugin;
 import grimbot.utilities.Util;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {
+	
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     private Connection conn = null;
-    String jokes = "";
+    private String jokes = "";
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
@@ -87,6 +98,8 @@ public class Joke extends Plugin {
         			break;
         		case "import": post = importJokes(jokes, "jokes.txt");
     				break;
+        		case "export": post = exportJokes(jokes);
+					break;
         		case "count": post = countJokes(jokes);
     				break;
         		default: 
@@ -248,6 +261,47 @@ public class Joke extends Plugin {
 			e.printStackTrace();
 			return "Error reading "+table+" table.";
 		}
+	}
+	
+	private String exportJokes(String table) {
+		System.out.println("EXPORTING...");
+		String sql = "SELECT joke FROM "+table;
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			String filename = buildExportFilename(table);
+			PrintWriter export = createExportFile(filename);
+			while (rs.next()) {
+				export.append(rs.getString(1)+"\r\n");
+			}
+			ps.close();
+			export.close();
+			return "[The "+table+" table has been exported to the `exports` folder.]";
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return "[Error attempting to export "+table+" table.]";
+	}
+	
+	private PrintWriter createExportFile(String filename) {
+		PrintWriter writer = null;
+		try {
+			File f = new File(filename);
+			if (f.exists() && !f.isDirectory()) {
+				writer = new PrintWriter(new FileOutputStream(new File(filename), true));
+			} else {
+				writer = new PrintWriter(filename, "UTF-8");
+			}
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return writer;
+	}
+	
+	private String buildExportFilename(String table) {
+		String date = dateFormat.format(new Date()); //2017-01-30_12-08-43
+		return "exports"+File.separator+"export_jokes_" + table 
+				+ "_" + date + ".txt";
 	}
 	
 	// Placeholders for handling multiple joke tables.
