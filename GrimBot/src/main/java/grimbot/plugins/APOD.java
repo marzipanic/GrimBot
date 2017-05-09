@@ -73,7 +73,7 @@ public class APOD extends Plugin{
 	private Message buildEmbed(JSONObject apod) {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(java.awt.Color.BLACK);
-		eb.addField("APOD: "+apod.getString("title"), apod.getString("explanation"), false);
+		eb.addField("APOD: "+apod.getString("title"), truncateMessage(apod.getString("explanation")), false);
         eb.addField("HD Image", apod.getString("hdurl"), false);
         eb.setImage(apod.getString("url"));
         eb.setFooter("Data from NASA", "https://api.nasa.gov/images/logo.png");
@@ -93,6 +93,14 @@ public class APOD extends Plugin{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private String truncateMessage(String msg) {
+		if (msg.length() > 1024) {
+			msg = msg.substring(0, 950);
+			msg += "...\n[Read more at APOD.](https://apod.nasa.gov)";
+		}
+		return msg;
 	}
 	
 	private void sendMessage(MessageReceivedEvent event, String message){
