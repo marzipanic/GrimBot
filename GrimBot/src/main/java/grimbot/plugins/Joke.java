@@ -18,19 +18,25 @@ import java.util.List;
 import grimbot.Bot;
 import grimbot.Plugin;
 import grimbot.utilities.Util;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Joke extends Plugin {
 	
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-    private Connection conn = null;
-    private String jokes = "";
+	private static final String configModOption = "jokes_mod";
+    private static final String configModDefault = "owner";
+    private static Connection conn = null;
+    private static String jokeTable = ""; // table used to store jokes
+    private static String modTag = ""; // tag used to determine default admin privileges
 
 	public Joke() {
 		super("^(joke|silly)($|\\s+|\\s.+)?");
 		conn = Bot.database.conn;
-		jokes = Bot.database.initializeTable("wow","id int primary key not null, joke text not null");
+		jokeTable = Bot.database.initializeTable("wow","id int primary key not null, joke text not null");
+		modTag = initializePermissions();
 	}
 
 	@Override
@@ -87,28 +93,33 @@ public class Joke extends Plugin {
 	public void handleMessage(String msg, MessageReceivedEvent event) {
     	String post = "Joke is on you!";
     	String[] cmd = msg.split(" ");
-        if (cmd.length == 1) post = readRandomJoke(jokes);
+        if (cmd.length == 1) post = readRandomJoke(jokeTable);
+        else if (Util.isInteger(cmd[1])) {
+			post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
+        }
         else {
-        	switch (cmd[1]) {
-        		case "add": post = createJoke(jokes, msg.split(" ",3)[2]);
-        			break;
-        		case "update": post = updateJoke(jokes, cmd[2], msg.split(" ",4)[3]);
-        			break;
-        		case "delete": post = deleteJoke(jokes, cmd[2]);
-        			break;
-        		case "import": post = importJokes(jokes, "jokes.txt");
-    				break;
-        		case "export": post = exportJokes(jokes);
-					break;
-        		case "count": post = countJokes(jokes);
-    				break;
-        		default: 
-        			if (Util.isInteger(cmd[1])) {
-        				post = readJoke(jokes, Integer.parseInt(cmd[1]));
-        			} else {
-        				post = "...You speak gibberish. [Bot command was malformed.]";
-        			}
-        			break;
+        	if (isMod(event)) {
+	        	switch (cmd[1]) {
+	        		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
+	        			break;
+	        		case "update": post = updateJoke(jokeTable, cmd[2], msg.split(" ",4)[3]);
+	        			break;
+	        		case "delete": post = deleteJoke(jokeTable, cmd[2]);
+	        			break;
+	        		case "mod": post = setModLevel(event, cmd[2]);
+	    				break;
+	        		case "import": post = importJokes(jokeTable, "jokes.txt");
+	    				break;
+	        		case "export": post = exportJokes(jokeTable);
+						break;
+	        		case "count": post = countJokes(jokeTable);
+	    				break;
+	        		default: 
+	        			post = "...You speak gibberish. [Bot command was malformed.]";
+	        			break;
+	        	}
+        	} else {
+        		post = "[Only Administrators or members with the "+modTag+" role may use that command.]";
         	}
         }
         event.getChannel().sendMessage(post).queue();
@@ -223,6 +234,23 @@ public class Joke extends Plugin {
 		}
 	}
 	
+	private String setModLevel(MessageReceivedEvent event, String tag) {
+		Member author = event.getMember();
+		if (author.hasPermission(Permission.ADMINISTRATOR)) {
+			if (tag.isEmpty()) {
+				tag = configModDefault;
+			}
+			if (Bot.config.getSetting(configModOption, "").isEmpty()) {
+				Bot.config.updateSetting(configModOption, tag);
+			} else {
+				Bot.config.updateSetting(configModOption, tag);
+			}
+			return "[Jokes mod role has been set to `"+tag+"`]";
+		} else {
+			return "[Jokes plugin mod role may only be set by a Server Administrator.]";
+		}
+	}
+	
 	private String importJokes(String table, String filename) {
 		HashMap<Integer, String> newJokes = Util.getBotFileAsMap("imports"+File.separator+filename);
 		HashMap<Integer, String> oldJokes = readJokeMap(table);
@@ -249,20 +277,6 @@ public class Joke extends Plugin {
 		} 
 	}
 	
-	private String countJokes(String table) {
-		String sql = "SELECT COUNT(*) FROM "+table;
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			int count = rs.getInt(1);
-			ps.close();
-			return "There are "+count+" jokes in the "+table+" table.";
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "Error reading "+table+" table.";
-		}
-	}
-	
 	private String exportJokes(String table) {
 		System.out.println("EXPORTING...");
 		String sql = "SELECT joke FROM "+table;
@@ -281,6 +295,20 @@ public class Joke extends Plugin {
 			e.printStackTrace();
 		} 
 		return "[Error attempting to export "+table+" table.]";
+	}
+	
+	private String countJokes(String table) {
+		String sql = "SELECT COUNT(*) FROM "+table;
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			int count = rs.getInt(1);
+			ps.close();
+			return "There are "+count+" jokes in the "+table+" table.";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "Error reading "+table+" table.";
+		}
 	}
 	
 	private PrintWriter createExportFile(String filename) {
@@ -304,6 +332,31 @@ public class Joke extends Plugin {
 				+ "_" + date + ".txt";
 	}
 	
+	private String initializePermissions() {
+		if (Bot.config.getSetting(configModOption, "").isEmpty()) {
+			Bot.config.updateSetting(configModOption, configModDefault);
+			return "owner";
+		} else {
+			return Bot.config.getSetting(configModOption, "");
+		}
+	}
+	
+	private boolean isMod(MessageReceivedEvent event) {
+		Member author = event.getMember();
+		List<Role> roles = author.getRoles();
+		boolean mod = false;
+		for (Role r : roles) {
+			if (r.getName().equals(modTag)) {
+				mod = true;
+			}
+		}
+		
+		if (author.hasPermission(Permission.ADMINISTRATOR) || mod) {
+			return true;
+		} 
+		return false;
+	}
+	
 	// Placeholders for handling multiple joke tables.
 	private boolean isValidTable(String table) {
 		if (table.equals("jokes")) return true;
@@ -312,7 +365,7 @@ public class Joke extends Plugin {
 	
 	// Placeholders for handling multiple joke tables.
 	private String getTable(String table) {
-		if (table.equals("jokes")) return jokes;
+		if (table.equals("jokes")) return jokeTable;
 		else return null;
 	}
 	

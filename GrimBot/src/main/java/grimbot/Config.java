@@ -13,42 +13,13 @@ import org.json.JSONObject;
 public class Config {
 	
 	static private JSONObject config;
+	static private String configFile = "";
 	static private final Pattern tokenRegex = Pattern.compile("^(\\w|\\p{Punct}){59}");
 	
 	Config(String f) {
-		LoadConfig(f);
+		configFile = f;
+		loadConfig();
 	}
-	
-	/*public String getGame() {
-		String game = "";
-		try {
-			game = config.getString("game").toString();
-		} catch (Exception e) {
-			game = "with Java!"; // Default if blank
-		}
-		return game;
-	}
-	
-	public String getGameLink() {
-		String gameLink = "https://github.com/marzipanic/GrimBot";
-		try {
-			String game = config.getString("gamelink").toString();
-		} catch (Exception e) {
-			System.out.println("ERROR: No gamelink set in config");
-		}
-		if (game.equals("") || game == null) game = "https://github.com/marzipanic/GrimBot"; // Default if blank
-		return game;
-	}
-	
-	public String getToken() {
-		return config.getString("token").toString();
-	}
-	
-	public String getPrefix() {
-		String prefix = config.getString("prefix").toString();
-		if (prefix.equals("")) prefix = "!"; // Default if blank
-		return config.getString("prefix").toString();
-	}*/
 	
 	public String getSetting(String option, String defaultSetting) {
 		String setting = defaultSetting;
@@ -60,15 +31,37 @@ public class Config {
 		return setting;
 	}
 	
+	public void updateSetting(String option, String setting) {
+		try {
+			config.remove(option);
+			config.put(option, setting);
+			saveConfig();
+			System.out.println("UPDATED CONFIG: setting "+option+" to "+setting);
+		} catch (Exception e) {
+			System.out.println("ERROR: Could not find setting for "+option);
+		}
+	}
+	
+	private void saveConfig() {
+		try {
+			PrintWriter writer = null;
+			writer = new PrintWriter(configFile, "UTF-8");
+			writer.println(config.toString(5));
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	// Read in basic config settings
-	private static void LoadConfig(String filename) {
-    	config = getJSON(filename);
+	private static void loadConfig() {
+    	config = getJSON(configFile);
     	if (config != null) {
-    		if (tokenIsValid()) System.out.println("SUCCESS: Config file "+filename+" has been loaded.");
+    		if (tokenIsValid()) System.out.println("SUCCESS: Config file "+configFile+" has been loaded.");
     		else System.out.println("ERROR: Config file is missing [token]; please create a new "
-    				+ "Bot User through your Discord account, then paste the token for it in "+filename+".");
-    	} else createConfigFile(filename);
+    				+ "Bot User through your Discord account, then paste the token for it in "+configFile+".");
+    	} else createConfigFile(configFile);
 	}
 	
 	private static JSONObject getJSON(String filename) {
@@ -113,6 +106,6 @@ public class Config {
 		
 		System.out.println("ERROR: Config file could not be found; a new config file has been created for you as "+filename
 				+ "\nTo run this bot, you must update the following config properties:"
-				+ "\n'token': Create a new App and Bot User through the Discord Developer website, then paste the bot user token here.");
+				+ "\n'token': Create a new App and Bot User through the Discord Developer website, then paste the bot token here.");
 	}
 }
