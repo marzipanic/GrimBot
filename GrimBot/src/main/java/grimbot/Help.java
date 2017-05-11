@@ -73,14 +73,14 @@ public class Help {
 		}
 		text += "`";
 		if (aliases != null) {
-			text += "\n**Aliases:**";
+			text += "\n\n**Aliases:**";
 			for (int i=0; i<aliases.length; i++) text += " `" + prefix + aliases[i] + "`";
 		}
 		if (desc != null) {
-			text +="\n**Description:** " + desc;
+			text +="\n\n**Description:** " + desc;
 		}
 		if (ex != null) {
-			text += "\n**Examples:** ";
+			text += "\n\n**Examples:** ";
 			for (int i=0; i<ex.length; i++) text += "\n`" + prefix + ex[i] + "`";
 		}
 		return text;

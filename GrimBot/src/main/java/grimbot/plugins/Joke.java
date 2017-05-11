@@ -19,6 +19,7 @@ import grimbot.Bot;
 import grimbot.Plugin;
 import grimbot.utilities.Util;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -56,9 +57,10 @@ public class Joke extends Plugin {
 
 	@Override
 	public String getDescription() {
-		return "Bot responds with a random joke. Users may also query the bot using the following parameters:"
+		return "Bot responds with a random joke."
+				+ "\n\n__Optional Parameters__"
 				+ "\n`<#>` - Reads response # from database." 
-				+ "\n\nUsers with the `"+modTag+"` role may addtionally query the bot with the following parameters:"
+				+ "\n\n__Optional Parameters: for `"+modTag+"` Role__"
 				+ "\n`<#>` - Reads response # from database." 
 				+ "\n`add <response text>` - Adds response to the `jokes` table."
 				+ "\n`update <#> <text>` - Updates response # with given text."
@@ -94,28 +96,32 @@ public class Joke extends Plugin {
 			post = readJoke(jokeTable, Integer.parseInt(cmd[1]));
         }
         else {
-        	if (isMod(event)) {
-	        	switch (cmd[1]) {
-	        		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
-	        			break;
-	        		case "update": post = updateJoke(jokeTable, cmd[2], msg.split(" ",4)[3]);
-	        			break;
-	        		case "delete": post = deleteJoke(jokeTable, cmd[2]);
-	        			break;
-	        		case "mod": post = setModLevel(event, cmd[2]);
-	    				break;
-	        		case "import": post = importJokes(jokeTable, "jokes.txt");
-	    				break;
-	        		case "export": post = exportJokes(jokeTable);
-						break;
-	        		case "count": post = countJokes(jokeTable);
-	    				break;
-	        		default: 
-	        			post = "...You speak gibberish. [Bot command was malformed.]";
-	        			break;
+        	if (!event.isFromType(ChannelType.PRIVATE)) {
+        		if (isMod(event)) {
+		        	switch (cmd[1]) {
+		        		case "add": post = createJoke(jokeTable, msg.split(" ",3)[2]);
+		        			break;
+		        		case "update": post = updateJoke(jokeTable, cmd[2], msg.split(" ",4)[3]);
+		        			break;
+		        		case "delete": post = deleteJoke(jokeTable, cmd[2]);
+		        			break;
+		        		case "mod": post = setModLevel(event, cmd[2]);
+		    				break;
+		        		case "import": post = importJokes(jokeTable, "jokes.txt");
+		    				break;
+		        		case "export": post = exportJokes(jokeTable);
+							break;
+		        		case "count": post = countJokes(jokeTable);
+		    				break;
+		        		default: 
+		        			post = "...You speak gibberish. [Bot command was malformed.]";
+		        			break;
+		        	}
+	        	} else {
+	        		post = "[Only Administrators or members with the "+modTag+" role may use that command.]";
 	        	}
         	} else {
-        		post = "[Only Administrators or members with the "+modTag+" role may use that command.]";
+        		post = "[Commands requiring a mod role cannot be issued in a Direct Message. Try your command again in a server channel.]";
         	}
         }
         event.getChannel().sendMessage(post).queue();
@@ -338,17 +344,19 @@ public class Joke extends Plugin {
 	}
 	
 	private boolean isMod(MessageReceivedEvent event) {
-		Member author = event.getMember();
-		List<Role> roles = author.getRoles();
-		boolean mod = false;
-		for (Role r : roles) {
-			if (r.getName().equals(modTag)) {
-				mod = true;
+		if (!event.isFromType(ChannelType.PRIVATE)) {
+			Member author = event.getMember();
+			List<Role> roles = author.getRoles();
+			boolean mod = false;
+			for (Role r : roles) {
+				if (r.getName().equals(modTag)) {
+					mod = true;
+				}
 			}
-		}
-		
-		if (author.hasPermission(Permission.ADMINISTRATOR) || mod) {
-			return true;
+			
+			if (author.hasPermission(Permission.ADMINISTRATOR) || mod) {
+				return true;
+			} 
 		} 
 		return false;
 	}
