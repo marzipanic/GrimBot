@@ -19,7 +19,7 @@ public class Main {
 	}
 	
 	// Print friendly welcome message to console
-	public static void Intro(){
+	private static void Intro(){
 		System.out.println("-----===== GrimBot =====-----"
 				+ "\nWritten by: Miriam Feldhausen (Marzipanic)"
 				+ "\nCreated: February 2017"

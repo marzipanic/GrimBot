@@ -1,6 +1,5 @@
 package grimbot;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -11,14 +10,12 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class ChatListener extends ListenerAdapter {
 	
 	private final Pattern helpRegex = Pattern.compile("^((H|h)(E|e)(L|l)(P|p)|(C|c)(O|o)(M|m)(M|m)(A|a)(N|n)(D|d)(S|s)?)($|\\s+|\\s.+)?");
-	private List<Plugin> plugins;
 	private String prefix = "";
 	private Help help;
 	
-	public ChatListener(String p, List<Plugin> plug) {
+	public ChatListener(String p) {
 		prefix = p;
-		plugins = plug;
-		setHelp(new Help(prefix, plugins));
+		setHelp(new Help(prefix, Bot.plugins));
 	}
 	
 	public void onMessageReceived(final MessageReceivedEvent event) {
@@ -37,7 +34,7 @@ public class ChatListener extends ListenerAdapter {
 				if(helpRegex.matcher(msg).matches()) {
 					Help.handle(event, msg);
 				} else {
-					for(Plugin p: plugins) {
+					for(Plugin p: Bot.plugins) {
 						if ((p.pattern).matcher(msg).matches()) {
 							handleCommand(p, msg, event);
 						}

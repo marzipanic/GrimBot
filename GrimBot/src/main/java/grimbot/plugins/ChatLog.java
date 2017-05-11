@@ -26,7 +26,7 @@ public class ChatLog extends Plugin{
 
 	@Override
 	public String getDescription() {
-		return "Logs chat channel. If channel name and time interval are left blank, will default to channel that the command was given in and a period of 24 hours.";
+		return "Logs chat channel immediately to a file. If channel name and time interval are left blank, will default to channel that the command was given in and a period of 24 hours.";
 	}
 
 	@Override

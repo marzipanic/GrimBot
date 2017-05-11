@@ -21,7 +21,7 @@ public final class Bot {
 	public static String prefix = "";
 	public static JDABuilder jda;
 	public static List<Plugin> plugins = new ArrayList<Plugin>();
-	public static final String pluginPath = System.getProperty("user.dir") 
+	private static final String pluginPath = System.getProperty("user.dir") 
 			+ File.separator + "target" + File.separator + "classes" 
 			+ File.separator + "grimbot" + File.separator + "plugins";
 	
@@ -40,7 +40,7 @@ public final class Bot {
 	        	.setAutoReconnect(true);
 		
 		loadPlugins();
-		ChatListener listener = new ChatListener(prefix, plugins);
+		ChatListener listener = new ChatListener(prefix);
 		ChatLogger logger = new ChatLogger(config.getSetting("gdriveapikey", null));
 		jda.addListener(listener).addListener(logger);
 		connectBot();
