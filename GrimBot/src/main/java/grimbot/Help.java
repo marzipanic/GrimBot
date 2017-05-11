@@ -22,7 +22,8 @@ public class Help {
 	
 	public static void handle(MessageReceivedEvent event, String msg) {
 		if (msg.split(" ").length == 1) {
-			handleMenuHelp(event);
+			System.out.println("Attempting to send Message");
+			sendMessage(event, menu);
 		} else { 
 			boolean found = false;
 			for (Plugin p: Bot.plugins) {
@@ -32,19 +33,17 @@ public class Help {
 				}
 			}
 			if (!found) {
-				sendPublic(event, "[Bot command was malformed. Type `"+prefix+"help` for more information.]");
+				sendString(event, "[Bot command was malformed. Type `"+prefix+"help` for more information.]");
 			}
 		}
 	}
 	
-	public static void handleMenuHelp(MessageReceivedEvent event) {
-		sendPublic(event, " I sent you a direct message.");
-		sendPrivate(event, menu);
-	}
-	
 	public static void handlePluginHelp(MessageReceivedEvent event, String alias) {
-		sendPublic(event, " I sent you a direct message.");
-		sendPrivate(event, embeds.get(alias));
+		if (embeds.containsKey(alias)) {
+			sendMessage(event, embeds.get(alias));
+		} else {
+			sendString(event, "[There is no plugin with the primary alias `"+alias+"`.]");
+		}
 	}
 	
 	private String buildMenuHelp(String alias, String usage) {
@@ -111,14 +110,19 @@ public class Help {
 		System.out.println("Help Menu build successfully!");
 	}
 	
-	private static void sendPrivate(MessageReceivedEvent event, Message m) {
-		event.getAuthor().getPrivateChannel().sendMessage(m).queue();
-	}
-	
-	private static void sendPublic(MessageReceivedEvent event, String msg) {
+	private static void sendMessage(MessageReceivedEvent event, Message msg) {
 		if (!event.isFromType(ChannelType.PRIVATE)) {
 			event.getChannel().sendMessage(event.getAuthor().getAsMention() 
-					+ msg).queue();
+					+ " I sent you a direct message.").queue();
 		}
+		event.getAuthor().getPrivateChannel().sendMessage(msg).queue();
+	}
+	
+	private static void sendString(MessageReceivedEvent event, String msg) {
+		if (!event.isFromType(ChannelType.PRIVATE)) {
+			event.getChannel().sendMessage(event.getAuthor().getAsMention() 
+					+ " I sent you a direct message.").queue();
+		}
+		event.getAuthor().getPrivateChannel().sendMessage(msg).queue();
 	}
 }

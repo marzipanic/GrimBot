@@ -56,20 +56,16 @@ public class Joke extends Plugin {
 
 	@Override
 	public String getDescription() {
-		return "Bot responds with a random joke. If provided a `joke #`, will tell the corresponding joke."
-				+ " If `count` is requested, will report number of jokes known."
-				+ "\n\nBot responses may be edited by authorized users with with the following "
-				+ "command paramaters:"
-				+ "\n`<response #>` - Reads response from `jokes` table with given #." 
+		return "Bot responds with a random joke. Users may also query the bot using the following parameters:"
+				+ "\n`<#>` - Reads response # from database." 
+				+ "\n\nUsers with the `"+modTag+"` role may addtionally query the bot with the following parameters:"
+				+ "\n`<#>` - Reads response # from database." 
 				+ "\n`add <response text>` - Adds response to the `jokes` table."
-				+ "\n`update <response #> <response text>` - Updates response text for the "
-				+ "response # in table."
-				+ "\n`delete <reponse #>` - Deletes response (by its #) from the `jokes` table."
-				+ "\n`import <textfile name and extension>` - Imports responses from textfile "
-				+ "into the `jokes` table."
-				+ "\n`export` - Exports responses from database to the `exports` folder."
-				+ "into textfile. NOT CURRENTLY FUNCTIONAL!"
-				+ "\n`count` - Reports how many unique hello responses are known.";
+				+ "\n`update <#> <text>` - Updates response # with given text."
+				+ "\n`delete <#>` - Deletes response by #."
+				+ "\n`import <filename and extension>` - Imports responses from textfile."
+				+ "\n`export` - Exports responses as a textfile."
+				+ "\n`count` - Reports number of responses known.";
 	}
 
 	@Override
